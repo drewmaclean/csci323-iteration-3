@@ -1,0 +1,86 @@
+//Here is the possible panel for the graph and a good starting point.
+import java.awt.Color;
+
+
+public class GUI extends JPanel implements ActionListener{
+
+	//Define our global scale variables
+	JComboBox ChartTypeCB = new JComboBox();
+	JComboBox StockCB = new JComboBox();
+	public static String CurrentGraph = "";
+
+	public GUI()
+	{
+		//All this is just layout stuff and declaring the event listener
+		setLayout(null);
+		
+		setPreferredSize(new Dimension(400,400));
+		
+		
+		ChartTypeCB.setModel(new DefaultComboBoxModel(new String[] {"Pie Chart", "Line Chart (Default)", "Block Chart"}));
+		ChartTypeCB.setToolTipText("");
+		ChartTypeCB.setBounds(10, 67, 121, 20);
+		add(ChartTypeCB);
+		
+		JLabel lblChartTypes = new JLabel("Chart Types:");
+		lblChartTypes.setBounds(10, 42, 98, 14);
+		add(lblChartTypes);
+		
+		JComboBox StockCB = new JComboBox();
+		
+		StockCB.setModel(new DefaultComboBoxModel(new String[] {"AAPL", "BAC", "COKE", "COP", "COST", "DIS", "F", "MSFT", "NKE", "YHOO"}));
+		StockCB.setSelectedIndex(0);
+		StockCB.setToolTipText("");
+		StockCB.setBounds(10, 200, 121, 20);
+		add(StockCB);
+		
+		JLabel lblStockInformation = new JLabel("Stock Information:");
+		lblStockInformation.setBounds(10, 175, 121, 14);
+		add(lblStockInformation);
+		
+		JButton NewWindowButton = new JButton("Open New Window");
+		NewWindowButton.setBounds(10, 279, 141, 62);
+		add(NewWindowButton);
+		NewWindowButton.addActionListener(new otherActionListener());
+	
+		StockCB.addItemListener(new otherItemListener());
+	}
+
+
+	//This is the listener for the button. It activates the Main class in the
+	//RTChart.java class that jesse made.
+	
+	private class otherActionListener implements ActionListener
+	{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			
+			// TODO Auto-generated method stub
+			try {
+				
+				
+                RTChart.main(new String[0]);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+			
+		}
+		
+		
+	}
+	
+	 //This sets the value of the combo box to open up the
+	//specified graph. You can open up multiple graphs this way.
+	private class otherItemListener implements ItemListener
+	{
+	
+	public void itemStateChanged(ItemEvent e) {
+				CurrentGraph = (String) e.getItem();
+				
+			}
+	}	
+	
+	
+}
