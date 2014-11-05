@@ -1,29 +1,84 @@
-
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.Timer;
-import java.util.TimerTask;
-import javax.swing.JFrame;
-import com.xeiam.xchart.Chart;
-import com.xeiam.xchart.XChartPanel;
+import javax.swing.*;
+import com.xeiam.xchart.*;
 
 
-
-public class RTChart  {
+//Here I changed a bit of jesse's code in order
+//For it to work inside of multiple panels simultaneously. 
+public class RTChart extends JPanel  {
 
   private Chart chart;
-  public static final String SERIES_NAME = "APPL";
+  public static String SERIES_NAME = "";
   private static List<Integer> xData;
   private static List<Double> yData;
   static DatabaseAccess db;
-  static Stock APPL;
-  
+
+  	public static Stock MainStock;
+  	public static String ChartTitle = "";
+  	
   public static void main(String[] args) throws ClassNotFoundException, SQLException {
+	  //If statements that get the information from the GUI class
+	  //this will determine which graph to display and will display
+	  //it seperately.
+	  String SelectedGraph = GUI.CurrentGraph;
+	  
+	  if(SelectedGraph.equals("AAPL"))
+	  {
+		  ChartTitle = "Apple Inc.";
+		  SERIES_NAME = "AAPL";
+	  }
+	  else if(SelectedGraph.equals("BAC"))
+	  {
+		  ChartTitle = "Bank of America";
+		  SERIES_NAME = "bac";
+	  }
+	  else if(SelectedGraph.equals("COKE"))
+	  {
+		  ChartTitle = "Coca-Cola";
+		  SERIES_NAME = "coke";
+	  }
+	  else if(SelectedGraph.equals("COP"))
+	  {
+		  ChartTitle = "ConocoPhillips";
+		  SERIES_NAME = "cop";
+	  }
+	  else if(SelectedGraph.equals("COST"))
+	  {
+		  ChartTitle = "Costco";
+		  SERIES_NAME = "cost";
+	  }
+	  else if(SelectedGraph.equals("DIS"))
+	  {
+		  ChartTitle = "Walt Disney";
+		  SERIES_NAME = "dis";
+	  }
+	  else if(SelectedGraph.equals("F"))
+	  {
+		  ChartTitle = "Facebook";
+		  SERIES_NAME = "f";
+	  }
+	  else if(SelectedGraph.equals("MSFT"))
+	  {
+		  ChartTitle = "Microsoft";
+		  SERIES_NAME = "msft";
+	  }
+	  else if(SelectedGraph.equals("NKE"))
+	  {
+		  ChartTitle = "Nike";
+		  SERIES_NAME = "nke";
+	  }
+	  else if(SelectedGraph.equals("YHOO"))
+	  {
+		  ChartTitle = "Yahoo";
+		  SERIES_NAME = "yhoo";
+	  }
+	  
 	
 	 //Calls db access and Stock classes 
 	 db = new DatabaseAccess();
-     APPL = db.getAPPL();
+     MainStock = db.getAPPL(SERIES_NAME);
     
      // Sets up panel
      final RTChart myRTChart = new RTChart();
@@ -37,7 +92,7 @@ public class RTChart  {
 
         // Create and set up the window.
         JFrame frame = new JFrame("Stock Market Game");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.add(chartPanel);
 
         // Display the window.
@@ -80,7 +135,7 @@ public class RTChart  {
     // Create Chart with two data points random data points need to find away to 
     //remove the first two data pts(Maybe)..
     Chart chart = new Chart(800, 800);
-    chart.setChartTitle("Apple Inc. ");
+    chart.setChartTitle(ChartTitle);
     chart.setXAxisTitle("Day");
     chart.setYAxisTitle("Price($)");
     chart.addSeries(SERIES_NAME, xData, yData);
@@ -117,18 +172,18 @@ public class RTChart  {
 
     
     //Instantiate i with size of List
-    int i =3519;
+    int i =2514;//3519;
 
     //Adds data from APPL.data to yData until end of list=3520
-    while (yData.size() <APPL.data.size()) {
-      yData.add(APPL.data.get(i));
+    while (yData.size() <MainStock.data.size()) {
+      yData.add(MainStock.data.get(i));
       i--;
     }
 
     //Adds 1,2,3,4...etc to xdata until end of Lists
     //Dont know why the xData.add has all that within the parameters can be fixed eventually
     xData.add(xData.get(xData.size() - 1) + 1);
-    while (xData.size() > APPL.dates.size()) {
+    while (xData.size() > MainStock.dates.size()) {
     	
       //Dont know why this is here but when removed graph dont function properly
       xData.remove(0);
@@ -145,5 +200,6 @@ public class RTChart  {
 
     return xData;
   }
+  
+  
 }
-
