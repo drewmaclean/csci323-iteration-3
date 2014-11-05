@@ -9,14 +9,17 @@ public class Stock {
     public List<Date> transientDates;
     public List<Double> transientData;
 
+    public String tickerSymbol;
+
     private int i;
 
-    public Stock(ArrayList<Date> dates, ArrayList<Double> data){
+    public Stock(String tickerSymbol, ArrayList<Date> dates, ArrayList<Double> data){
         if(dates.size() != data.size())
             throw new IllegalArgumentException("Dates and data are not the same size ");
 
         i = dates.size()-1;
 
+        this.tickerSymbol = tickerSymbol;
         this.dates = dates;
         this.data  = data;
 

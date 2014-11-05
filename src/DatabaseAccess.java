@@ -39,7 +39,7 @@ public class DatabaseAccess {
         conn.close();
     }
 
-    public Stock readFromDb(String table){
+    public Stock readFromDb(String tickerSymbol){
         try{
             openConnection();
 
@@ -48,7 +48,7 @@ public class DatabaseAccess {
 
             Statement State = conn.createStatement();
 
-            String str = String.format("SELECT * FROM " + table);
+            String str = String.format("SELECT * FROM " + tickerSymbol);
             State.executeQuery(str);
             ResultSet RS = State.getResultSet(); // database scanner
             ArrayList<Date> dates = new ArrayList<Date>();
@@ -60,7 +60,7 @@ public class DatabaseAccess {
             }
             closeConnection();
 
-            return new Stock(dates, data);
+            return new Stock(tickerSymbol, dates, data);
 
         } catch (Exception e) {
             System.err.println("Got an exception!");
