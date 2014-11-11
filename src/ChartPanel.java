@@ -2,7 +2,9 @@ import com.xeiam.xchart.*;
 
 import java.awt.*;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.*;
@@ -16,6 +18,8 @@ public class ChartPanel extends JPanel{
     DatabaseAccess db;
     JLabel placeHolder = new JLabel("Please Select a stock");
     boolean zeroStocks = true;
+    double currentPrice = 0;
+    JLabel stockPrice;
 
     public ChartPanel() throws SQLException, ClassNotFoundException {
         db = new DatabaseAccess();
@@ -42,7 +46,40 @@ public class ChartPanel extends JPanel{
         series.setMarker(SeriesMarker.NONE);
         stocks.add(stock);
     }
-
+    
+    public double buyStock() {
+    	int i = 0;
+    	for(Stock s: stocks){
+            s.buy();
+            //ArrayList<Double> buyData = new ArrayList<Double>();
+            //for(int j=0; j < s.transientDates.size(); j++){
+            //	buyData.add(s.buyPrice);
+            //}
+            //Series series = chart.addSeries("app", s.transientDates, buyData);
+            DecimalFormat df = new DecimalFormat("#.##");
+            MainGame.stockAL.get(i).setText((s.tickerSymbol + " : " + s.buyPrice + " : " + s.sellPrice + " : " + df.format(s.valueChange)));
+            i++;
+        }
+    	return currentPrice;
+    }
+    
+    public double sellStock() {
+    	int i = 0;
+    	for(Stock s: stocks){
+            s.sell();
+            
+            DecimalFormat df = new DecimalFormat("#.##");
+            MainGame.stockAL.get(i).setText((s.tickerSymbol + " : " + s.buyPrice + " : " + s.sellPrice + " : " + df.format(s.valueChange)));
+            if(s.valueChange > 0){
+            	MainGame.stockAL.get(i).setForeground(Color.GREEN);
+            } else {
+            	MainGame.stockAL.get(i).setForeground(Color.RED);
+            }
+            i++;
+        }
+    	return currentPrice;
+    }
+    
     public void play() {
         timer = new Timer();
         timer.scheduleAtFixedRate(new EventLoop(), 0, 50);
@@ -56,6 +93,10 @@ public class ChartPanel extends JPanel{
                 }
                 s.update();
                 stockPanel.updateSeries(s.tickerSymbol, s.transientDates, s.transientData);
+                //for(int j=0; j < s.transientDates.size(); j++){
+                //	s.buyData.add(10.0);
+                //}
+                //stockPanel.updateSeries(s.tickerSymbol, s.transientDates, s.buyData);
             }
         }
     }

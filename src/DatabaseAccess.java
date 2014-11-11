@@ -56,7 +56,7 @@ public class DatabaseAccess {
 
             while (RS.next()) {
                 dates.add(sdf.parse(RS.getString(1)));
-                data.add(RS.getDouble(2));
+                data.add(RS.getDouble(5)); // get the close price
             }
             closeConnection();
 

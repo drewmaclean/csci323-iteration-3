@@ -1,4 +1,4 @@
-import javafx.scene.control.Tooltip;
+//import javafx.scene.control.Tooltip;
 
 import javax.swing.*;
 import java.awt.*;
@@ -7,11 +7,17 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 
 public class MainGame extends JPanel implements ActionListener, ItemListener {
 
     //Define our global scale variables
+	static ArrayList<JLabel> stockAL = new ArrayList<JLabel>();
+	JButton NewWindowButton,
+			BuyButton,
+			SellButton;
+	public JLabel stockPriceLabel;
     JComboBox ChartTypeCB = new JComboBox();
     public static String CurrentGraph = "";
     ChartPanel cp;
@@ -45,10 +51,32 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
         jsp.setBounds(10, 90, 120, 150);
         add(jsp);
 
-        JButton NewWindowButton = new JButton("play");
+        NewWindowButton = new JButton("play");
         NewWindowButton.addActionListener(this);
-        NewWindowButton.setBounds(10, 279, 141, 62);
+        NewWindowButton.setBounds(10, 270, 100, 30);
         add(NewWindowButton);
+        
+        BuyButton = new JButton("buy");
+        BuyButton.addActionListener(this);
+        BuyButton.setBounds(10, 310, 100, 30);
+        add(BuyButton);
+        BuyButton.setEnabled(false);
+        
+        SellButton = new JButton("sell");
+        SellButton.addActionListener(this);
+        SellButton.setBounds(10, 350, 100, 30);
+        add(SellButton);
+        SellButton.setEnabled(false);
+        
+        stockPriceLabel = new JLabel("Name - Buy - Sell - Profit");
+        stockPriceLabel.setBounds(10, 390, 200, 30);
+        add(stockPriceLabel);
+        
+        for (int i = 0; i < 10; i++) {
+        	stockAL.add(stockPriceLabel = new JLabel());
+        	stockAL.get(i).setBounds(10, (420 + (i * 20)), 200, 30);
+        	add(stockAL.get(i));
+        }
 
 
         cp = new ChartPanel();
@@ -65,7 +93,21 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        cp.play();
+    	if(e.getSource() == NewWindowButton) {
+    		cp.play();
+    		NewWindowButton.setEnabled(false);
+    		BuyButton.setEnabled(true);
+    	}
+    	else if(e.getSource() == BuyButton) {
+    		cp.buyStock();
+    		SellButton.setEnabled(true);
+    		BuyButton.setEnabled(false);
+    	}
+    	else if(e.getSource() == SellButton) {
+    		cp.sellStock();
+    		SellButton.setEnabled(false);
+    		BuyButton.setEnabled(true);
+    	}
     }
 
     @Override

@@ -9,9 +9,15 @@ public class Stock {
     public List<Date> transientDates;
     public List<Double> transientData;
 
+    ArrayList<Double> buyData = new ArrayList<Double>();; //?
     public String tickerSymbol;
 
     private int i;
+    
+    double currentPrice = 0;
+    double buyPrice = 0;
+    double sellPrice = 0;
+    double valueChange = 0;
 
     public Stock(String tickerSymbol, ArrayList<Date> dates, ArrayList<Double> data){
         if(dates.size() != data.size())
@@ -32,11 +38,25 @@ public class Stock {
     }
 
     public void update() {
+    	currentPrice = data.get(i);
         transientDates.add(dates.get(i));
         transientData.add(data.get(i));
         i--;
     }
+    
+    public void buy() {
+    	buyPrice = currentPrice;
+        for(int j=0; j < transientDates.size(); j++){
+        	buyData.add(buyPrice);
+        }
+    }
 
+    public double sell() {
+    	sellPrice = currentPrice;
+    	valueChange += sellPrice - buyPrice;
+    	return valueChange;
+    }
+    
     public boolean hasNext() {
         return i > 0;
     }
