@@ -1,10 +1,8 @@
 import com.xeiam.xchart.*;
-
 import java.awt.*;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.*;
@@ -20,7 +18,6 @@ public class ChartPanel extends JPanel{
     JLabel placeHolder = new JLabel("Please Select a stock");
     boolean zeroStocks = true;
     double currentPrice = 0;
-    JLabel stockPrice;
 
     public ChartPanel() throws SQLException, ClassNotFoundException {
         db = new DatabaseAccess();

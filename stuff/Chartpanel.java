@@ -1,10 +1,11 @@
+package stuff;
+
 import com.xeiam.xchart.*;
 
 import java.awt.*;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.*;

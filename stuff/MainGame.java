@@ -1,4 +1,4 @@
-//import javafx.scene.control.Tooltip;
+package stuff;//import javafx.scene.control.Tooltip;
 
 import javax.swing.*;
 
