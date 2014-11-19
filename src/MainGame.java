@@ -52,6 +52,9 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
         //All this is just layout stuff and declaring the event listener
         setLayout(null);
 
+        // set background colour
+        setBackground(Color.WHITE);
+
         setPreferredSize(new Dimension(1100, 630));
 
         JLabel lblChartTypes = new JLabel("Chart Types:");
@@ -67,7 +70,6 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
         lblStockInformation.setBounds(15, 70, 120, 14);
         add(lblStockInformation);
 
-        
         JCheckBox[] stocks = {StockCheckBox("AAPL"), StockCheckBox("BAC"), StockCheckBox("COKE"),
                 StockCheckBox("COP"), StockCheckBox("COST"), StockCheckBox("DIS"), StockCheckBox("F"),
                 StockCheckBox("MSFT"), StockCheckBox("NKE"), StockCheckBox("YHOO")};
@@ -107,8 +109,6 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
         movingAverageCB.addActionListener(this);
         movingAverageCB.setSelectedIndex(0);
         
-        
-        
         stockPriceLabel = new JLabel("Name - Buy - Sell - Profit");
         stockPriceLabel.setBounds(10, 404, 200, 30);
         add(stockPriceLabel);
@@ -119,66 +119,46 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
         	add(stockAL.get(i));
         }
 
-
         cp = new ChartPanel();
         cp.setBounds(262,11, 800, 600);
         add(cp);
-        
         
         AAPLCheck.setEnabled(false);
         AAPLCheck.setBounds(136, 88, 61, 23);
         add(AAPLCheck);
      
-        
-        
         COKECheck.setEnabled(false);
         COKECheck.setBounds(136, 114, 61, 23);
         add(COKECheck);
-    
-        
-        
+
         NKECheck.setEnabled(false);
         NKECheck.setBounds(136, 140, 61, 23);
         add(NKECheck);
       
-        
-        
         BACCheck.setEnabled(false);
         BACCheck.setBounds(136, 166, 61, 23);
         add(BACCheck);
      
-        
-        
         COPCheck.setEnabled(false);
         COPCheck.setBounds(136, 192, 61, 23);
         add(COPCheck);
      
-        
-        
         COSTCheck.setEnabled(false);
         COSTCheck.setBounds(200, 88, 74, 23);
         add(COSTCheck);
-  
-        
-       
+
         DISCheck.setEnabled(false);
         DISCheck.setBounds(200, 114, 89, 23);
         add(DISCheck);
-   
-        
-        
+
         FCheck.setEnabled(false);
         FCheck.setBounds(200, 140, 74, 23);
         add(FCheck);
   
-        
-        
         MSFTCheck.setEnabled(false);
         MSFTCheck.setBounds(200, 166, 89, 23);
         add(MSFTCheck);
 
-        
-        
         YHOOCheck.setEnabled(false);
         YHOOCheck.setBounds(200, 192, 74, 23);
         add(YHOOCheck);
@@ -186,7 +166,6 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
         JLabel lblNewLabel = new JLabel("Select to Buy/Sell");
         lblNewLabel.setBounds(136, 70, 97, 14);
         add(lblNewLabel);
-        
         
         SlowSpeedButton.setBounds(163, 274, 89, 23);
         add(SlowSpeedButton);
@@ -196,16 +175,12 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
         add(MediumSpeedButton);
         MediumSpeedButton.addActionListener(this);
         
-       
         FastSpeedButton.setBounds(163, 354, 89, 23);
         add(FastSpeedButton);
         FastSpeedButton.addActionListener(this);
         
-        
         SpeedLabel.setBounds(163, 249, 89, 14);
         add(SpeedLabel);
-
-
     }
 
     private JCheckBox StockCheckBox(String s){
@@ -213,7 +188,6 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
         check.addItemListener(this);
         return check;
     }
-    
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -271,15 +245,8 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
     			movingAverageSelected = 100;
     		}
     	}
-    	
-    	
-    	
     }
     
-
-    
-    
-
     @Override
     public void itemStateChanged(ItemEvent e) {
         JCheckBox c = (JCheckBox) e.getSource();
@@ -290,7 +257,6 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
         	if(c.getText().equals("AAPL"))
         	{
         		AAPLCheck.setEnabled(true);
-        		
         	}
         	else if(c.getText().equals("COKE"))
         	{
@@ -328,14 +294,10 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
         	{
         		YHOOCheck.setEnabled(true);
         	}
-        	
             cp.addStock(c.getText().toLowerCase());
             this.updateUI();
         }
-        
-        
     }
-
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
 

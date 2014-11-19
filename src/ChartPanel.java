@@ -1,10 +1,9 @@
 import com.xeiam.xchart.*;
-
+import com.xeiam.xchart.StyleManager.ChartTheme;
 import java.awt.*;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.*;
@@ -23,15 +22,18 @@ public class ChartPanel extends JPanel{
     JLabel stockPrice;
 
     public ChartPanel() throws SQLException, ClassNotFoundException {
+
+        setBackground(Color.WHITE);
+
         db = new DatabaseAccess();
 
         // Create Chart
-        chart = new ChartBuilder().width(800).height(300).title("Stock Game").build();
+        chart = new ChartBuilder().theme(ChartTheme.GGPlot2).width(800).height(300).title("Stock Game").build();
         chart.getStyleManager().setLegendVisible(false);
         
         //Updated from previous version
         //Create Noncompress Chart
-        chart2 = new ChartBuilder().width(800).height(300).title("Stock Game").build();
+        chart2 = new ChartBuilder().theme(ChartTheme.GGPlot2).width(800).height(300).title("Stock Game").build();
         chart2.getStyleManager().setLegendVisible(false);
 
         stockPanel = new XChartPanel(chart);
