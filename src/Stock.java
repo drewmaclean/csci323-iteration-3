@@ -11,6 +11,9 @@ public class Stock {
 
     ArrayList<Double> buyData = new ArrayList<Double>();; //?
     public String tickerSymbol;
+    
+    ArrayList<Date> indicatorDates;
+	ArrayList<Double> indicatorData;
 
     private int i;
     
@@ -31,6 +34,9 @@ public class Stock {
 
         transientDates = new ArrayList<Date>();
         transientData  = new ArrayList<Double>();
+        
+        indicatorDates = new ArrayList<Date>();
+        indicatorData = new ArrayList<Double>();
 
         // add two elements to each chart
         update();
@@ -40,6 +46,34 @@ public class Stock {
         ////updated from previous versions
         updateNonCompressedChart(); 
         updateNonCompressedChart();
+        
+        updateIndicator(MainGame.movingAverageSelected);
+        updateIndicator(MainGame.movingAverageSelected);
+        
+        
+
+    }
+    
+    public void updateIndicator(int movingAveragePeriod) {
+    	double average = 0;
+    	ArrayList<Double> tempAverage = new ArrayList<Double>();
+    	if (i < (dates.size()-movingAveragePeriod-1)) {
+    		for(int j=0; j < movingAveragePeriod; j++) {
+    			tempAverage.add(data.get(i+j));
+    		}
+    		/// find moving average
+    		double sum = 0;
+    		for (Double indData : tempAverage) {
+    	        sum += indData;
+    	    }
+    	    average = sum / tempAverage.size();
+    	    /// 
+    	    indicatorDates.add(dates.get(i));
+    	    indicatorData.add(average);
+    	} else {
+    		indicatorData.add(data.get(i)-.5);
+    		indicatorDates.add(dates.get(i));
+    	}
     }
 
     public void update() {

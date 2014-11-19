@@ -60,6 +60,9 @@ public class ChartPanel extends JPanel{
         Series series1 = chart2.addSeries(stock1.tickerSymbol, stock1.transientDates, stock1.transientData);
         series1.setMarker(SeriesMarker.NONE);
         stocks1.add(stock1);
+        
+        Series indicatorSeries = chart.addSeries(stock.tickerSymbol+"ind", stock.indicatorDates, stock.indicatorData);
+        indicatorSeries.setMarker(SeriesMarker.NONE);
     }
     
     public double buyStock() {
@@ -318,6 +321,9 @@ public class ChartPanel extends JPanel{
                 }
                 s.update();
                 stockPanel.updateSeries(s.tickerSymbol, s.transientDates, s.transientData);
+                
+                s.updateIndicator(MainGame.movingAverageSelected);
+                stockPanel.updateSeries(s.tickerSymbol+"ind", s.indicatorDates, s.indicatorData);
                 
                 //for(int j=0; j < s.transientDates.size(); j++){
                 //	s.buyData.add(10.0);

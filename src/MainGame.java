@@ -21,6 +21,10 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
 			SellButton;
 	public JLabel stockPriceLabel;
     JComboBox ChartTypeCB = new JComboBox();
+    
+    public static int movingAverageSelected = 0;
+    JLabel movingAverageLbl;
+    JComboBox<Integer> movingAverageCB;
     public static String CurrentGraph = "";
     ChartPanel cp;
     
@@ -90,6 +94,18 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
         SellButton.setBounds(10, 350, 100, 30);
         add(SellButton);
         SellButton.setEnabled(false);
+        
+        movingAverageLbl = new JLabel("Moving Average Period:");
+        movingAverageLbl.setBounds(130, 10, 150, 20);
+        add(movingAverageLbl);
+        
+        movingAverageCB = new JComboBox<Integer>();
+        movingAverageCB.setModel(new DefaultComboBoxModel(new Integer[] {10,25,50,100}));
+        movingAverageCB.setToolTipText("");
+        movingAverageCB.setBounds(150, 35, 100, 20);
+        add(movingAverageCB);
+        movingAverageCB.addActionListener(this);
+        movingAverageCB.setSelectedIndex(0);
         
         
         
@@ -240,6 +256,20 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
     		MediumSpeedButton.setEnabled(false);
     		FastSpeedButton.setEnabled(false);
     		SpeedLabel.setVisible(false);
+    	}
+    	else if(e.getSource() == movingAverageCB) {
+    		if (movingAverageCB.getSelectedIndex() == 0){
+    			movingAverageSelected = 10;
+    		}
+    		else if (movingAverageCB.getSelectedIndex() == 1){
+    			movingAverageSelected = 25;
+    		}
+    		else if (movingAverageCB.getSelectedIndex() == 2){
+    			movingAverageSelected = 50;
+    		}
+    		else if (movingAverageCB.getSelectedIndex() == 3){
+    			movingAverageSelected = 100;
+    		}
     	}
     	
     	
