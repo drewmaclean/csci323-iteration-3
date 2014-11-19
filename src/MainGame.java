@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 
 
@@ -16,16 +17,14 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
     //Define our global scale variables
 	static ArrayList<JLabel> stockAL = new ArrayList<JLabel>();
 	static ArrayList<String> AmountList = new ArrayList<String>();
-	JButton NewWindowButton,
+	JButton playButton,
 			BuyButton,
 			SellButton;
 	public JLabel stockPriceLabel;
-    JComboBox ChartTypeCB = new JComboBox();
-    
+
     public static int movingAverageSelected = 0;
     JLabel movingAverageLbl;
     JComboBox<Integer> movingAverageCB;
-    public static String CurrentGraph = "";
     ChartPanel cp;
     
     static JCheckBox AAPLCheck = new JCheckBox("AAPL");
@@ -48,7 +47,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
     
     JCheckBoxList cbList = new JCheckBoxList();
 
-    public MainGame() throws SQLException, ClassNotFoundException {
+    public MainGame() throws SQLException, ClassNotFoundException, ParseException {
         //All this is just layout stuff and declaring the event listener
         setLayout(null);
 
@@ -60,11 +59,6 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
         JLabel lblChartTypes = new JLabel("Chart Types:");
         lblChartTypes.setBounds(15, 10, 100, 14);
         add(lblChartTypes);
-
-        ChartTypeCB.setModel(new DefaultComboBoxModel(new String[] {"Line Chart (Default)","Pie Chart", "Block Chart"}));
-        ChartTypeCB.setToolTipText("");
-        ChartTypeCB.setBounds(10, 35, 120, 20);
-        add(ChartTypeCB);
 
         JLabel lblStockInformation = new JLabel("Stock Information:");
         lblStockInformation.setBounds(15, 70, 120, 14);
@@ -79,11 +73,11 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
         jsp.setBounds(10, 90, 120, 150);
         add(jsp);
 
-        NewWindowButton = new JButton("play");
-        NewWindowButton.setEnabled(false);
-        NewWindowButton.addActionListener(this);
-        NewWindowButton.setBounds(10, 270, 100, 30);
-        add(NewWindowButton);
+        playButton = new JButton("play");
+        playButton.setEnabled(false);
+        playButton.addActionListener(this);
+        playButton.setBounds(10, 270, 100, 30);
+        add(playButton);
         
         BuyButton = new JButton("buy");
         BuyButton.addActionListener(this);
@@ -192,9 +186,9 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
     @Override
     public void actionPerformed(ActionEvent e) {
     	
-    	if(e.getSource() == NewWindowButton) {
+    	if(e.getSource() == playButton) {
     		cp.play(Speed);
-    		NewWindowButton.setEnabled(false);
+    		playButton.setEnabled(false);
     		BuyButton.setEnabled(true);
     	}
     	else if(e.getSource() == BuyButton) {
@@ -209,7 +203,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
     	}
     	else if(e.getSource() == SlowSpeedButton) {
     		Speed = 200;
-    		NewWindowButton.setEnabled(true);
+    		playButton.setEnabled(true);
     		SlowSpeedButton.setEnabled(false);
     		MediumSpeedButton.setEnabled(false);
     		FastSpeedButton.setEnabled(false);
@@ -217,7 +211,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
     	}
     	else if(e.getSource() == MediumSpeedButton) {
     		Speed = 100;
-    		NewWindowButton.setEnabled(true);
+    		playButton.setEnabled(true);
     		SlowSpeedButton.setEnabled(false);
     		MediumSpeedButton.setEnabled(false);
     		FastSpeedButton.setEnabled(false);
@@ -225,7 +219,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
     	}
     	else if(e.getSource() == FastSpeedButton) {
     		Speed = 50;
-    		NewWindowButton.setEnabled(true);
+    		playButton.setEnabled(true);
     		SlowSpeedButton.setEnabled(false);
     		MediumSpeedButton.setEnabled(false);
     		FastSpeedButton.setEnabled(false);
@@ -299,7 +293,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
         }
     }
 
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+    public static void main(String[] args) throws SQLException, ClassNotFoundException, ParseException {
 
         // Create and set up the window.
         JFrame frame = new JFrame("Stock Market Game");

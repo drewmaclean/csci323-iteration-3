@@ -1,8 +1,9 @@
 import com.xeiam.xchart.*;
-import com.xeiam.xchart.StyleManager.ChartTheme;
+import com.xeiam.xchart.StyleManager.*;
 import java.awt.*;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -21,23 +22,25 @@ public class ChartPanel extends JPanel{
     double currentPrice = 0;
     JLabel stockPrice;
 
-    public ChartPanel() throws SQLException, ClassNotFoundException {
+    public ChartPanel() throws SQLException, ClassNotFoundException, ParseException {
 
         setBackground(Color.WHITE);
 
         db = new DatabaseAccess();
 
         // Create Chart
-        chart = new ChartBuilder().theme(ChartTheme.GGPlot2).width(800).height(300).title("Stock Game").build();
-        chart.getStyleManager().setLegendVisible(false);
+        chart = new ChartBuilder().theme(ChartTheme.GGPlot2).width(800).height(300).title("Stock price USD").build();
+        chart.getStyleManager().setLegendPosition(LegendPosition.InsideNW);
+        chart.getStyleManager().setLegendVisible(true);
         
         //Updated from previous version
         //Create Noncompress Chart
-        chart2 = new ChartBuilder().theme(ChartTheme.GGPlot2).width(800).height(300).title("Stock Game").build();
+        chart2 = new ChartBuilder().theme(ChartTheme.GGPlot2).width(800).height(300).title("30 day moving window").build();
         chart2.getStyleManager().setLegendVisible(false);
 
-        stockPanel = new XChartPanel(chart);
-        stockPanel1=new XChartPanel(chart2);
+        stockPanel  = new XChartPanel(chart);
+        stockPanel1 = new XChartPanel(chart2);
+
         // Placeholder label
         setMinimumSize(new Dimension(800,600));
         placeHolder.setMinimumSize(new Dimension(800,600));
@@ -50,21 +53,27 @@ public class ChartPanel extends JPanel{
             add(stockPanel);
             add(stockPanel1);
         }
-        //For compressed chart
+        // Add to nonCompressed chart
         Stock stock = db.readFromDb(tickerSymbol);
-        Series series = chart.addSeries(stock.tickerSymbol, stock.transientDates, stock.transientData);
+        Series series = chart.addSeries(stock.tickerSymbol,
+                                        stock.transientNonCompressedDates,
+                                        stock.transientNonCompressedData);
         series.setMarker(SeriesMarker.NONE);
-        stocks.add(stock);
-        
-        ////Updated from previous version
-        //For non compressed chart
-        Stock stock1 = db.readFromDb(tickerSymbol);
-        Series series1 = chart2.addSeries(stock1.tickerSymbol, stock1.transientDates, stock1.transientData);
-        series1.setMarker(SeriesMarker.NONE);
-        stocks1.add(stock1);
-        
-        Series indicatorSeries = chart.addSeries(stock.tickerSymbol+"ind", stock.indicatorDates, stock.indicatorData);
+
+
+        // add indicator
+        Series indicatorSeries = chart.addSeries(stock.tickerSymbol+" ind", stock.indicatorDates, stock.indicatorData);
         indicatorSeries.setMarker(SeriesMarker.NONE);
+
+
+        // Add to compressed chart
+        Series series1 = chart2.addSeries(stock.tickerSymbol,
+                stock.transientCompressedDates,
+                stock.transientCompressedData);
+        series1.setMarker(SeriesMarker.NONE);
+
+
+        stocks.add(stock);
     }
     
     public double buyStock() {
@@ -156,11 +165,8 @@ public class ChartPanel extends JPanel{
                     MainGame.stockAL.get(i).setText((s.tickerSymbol + " : " + s.buyPrice + " : " + s.sellPrice + " : " + df.format(s.valueChange)));
             	}
             }
-            
             i++;
         }
-    	
-    	
     	return currentPrice;
     }
     
@@ -298,56 +304,36 @@ public class ChartPanel extends JPanel{
                     }
             	}
             }
-           
-            
             i++;
         }
     	return currentPrice;
     }
     
     public void play(int Speed) {
-    	
         timer = new Timer();
-        
         timer.scheduleAtFixedRate(new EventLoop(), 0, Speed);
-        
-        
     }
 
     class EventLoop extends TimerTask {
         public void run() {
         	//For compressed graph
-            for(Stock s: stocks ){
+            for(Stock s: stocks){
                 if(!s.hasNext()){
                     timer.cancel();
                 }
                 s.update();
-                stockPanel.updateSeries(s.tickerSymbol, s.transientDates, s.transientData);
-                
                 s.updateIndicator(MainGame.movingAverageSelected);
-                stockPanel.updateSeries(s.tickerSymbol+"ind", s.indicatorDates, s.indicatorData);
-                
-                //for(int j=0; j < s.transientDates.size(); j++){
-                //	s.buyData.add(10.0);
-                //}
-                //stockPanel.updateSeries(s.tickerSymbol, s.transientDates, s.buyData);
-            }
-            
-            ////Updated from previous version
-            //For non compressed graph
-            for(Stock s1: stocks1 ){
-                if(!s1.hasNext()){
-                    timer.cancel();
-                }
-                
-                s1.updateNonCompressedChart();
-                stockPanel1.updateSeries(s1.tickerSymbol, s1.transientDates, s1.transientData);
-              
+
+                stockPanel.updateSeries(s.tickerSymbol, s.transientNonCompressedDates, s.transientNonCompressedData);
+                stockPanel.updateSeries(s.tickerSymbol+" ind", s.indicatorDates, s.indicatorData);
+
+                stockPanel1.updateSeries(s.tickerSymbol, s.transientCompressedDates, s.transientCompressedData);
+
             }
         }
     }
 
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+    public static void main(String[] args) throws SQLException, ClassNotFoundException, ParseException {
 
         // Create and set up the window.
         JFrame frame = new JFrame("Stock Market Game");

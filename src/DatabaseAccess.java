@@ -4,9 +4,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 
 public class DatabaseAccess {
@@ -19,32 +21,29 @@ public class DatabaseAccess {
                           url,
                           userName,
                           password;
+    private HashMap<String,Stock> stocks;
 
-    public DatabaseAccess() throws SQLException, ClassNotFoundException {
+    public DatabaseAccess() throws SQLException, ClassNotFoundException, ParseException {
         driverName = "org.gjt.mm.mysql.Driver";
         serverName = "sql5.freemysqlhosting.net";
         schema = "sql555866";
         url = "jdbc:mysql://" + serverName +  "/" + schema;
         userName = "sql555866";
         password = "vL3*mR8%";
-
         Class.forName(driverName);
-    }
 
-    private void openConnection() throws SQLException {
-        conn = DriverManager.getConnection(url, userName, password);
-    }
+        stocks = new HashMap<String, Stock>();
 
-    private void closeConnection() throws SQLException {
-        conn.close();
-    }
+        openConnection();
 
-    public Stock readFromDb(String tickerSymbol){
-        try{
-            openConnection();
+        // read all stocks into a hashMap for quick access
 
-            // this should probably be made a class level variable at some point
-            DateFormat sdf = new SimpleDateFormat("dd-MMM-yy");
+        String[] tickerSymbols = new String[] {"AAPL","COKE","NKE", "BAC","COP","COST","DIS","F","MSFT","YHOO"};
+        DateFormat sdf = new SimpleDateFormat("dd-MMM-yy");
+
+        for(String tickerSymbol : tickerSymbols){
+
+            tickerSymbol = tickerSymbol.toLowerCase();
 
             Statement State = conn.createStatement();
 
@@ -58,14 +57,27 @@ public class DatabaseAccess {
                 dates.add(sdf.parse(RS.getString(1)));
                 data.add(RS.getDouble(5)); // get the close price
             }
-            closeConnection();
 
-            return new Stock(tickerSymbol, dates, data);
-
-        } catch (Exception e) {
-            System.err.println("Got an exception!");
-            System.err.println(e.getMessage());
-            return null;
+            stocks.put(tickerSymbol, new Stock(tickerSymbol, dates, data));
         }
+
+        closeConnection();
+    }
+
+    private void openConnection() throws SQLException {
+        conn = DriverManager.getConnection(url, userName, password);
+    }
+
+    private void closeConnection() throws SQLException {
+        conn.close();
+    }
+
+    public Stock readFromDb(String tickerSymbol){
+        return stocks.get(tickerSymbol);
+    }
+
+    public static void main(String[] args) throws SQLException, ClassNotFoundException, ParseException {
+        DatabaseAccess db = new DatabaseAccess();
+        db.readFromDb("appl");
     }
 }
