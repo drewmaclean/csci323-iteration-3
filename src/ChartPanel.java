@@ -12,8 +12,9 @@ import javax.swing.*;
 public class ChartPanel extends JPanel{
 
     ArrayList<Stock> stocks = new ArrayList<Stock>();
-    XChartPanel stockPanel;
-    Chart chart;
+    ArrayList<Stock> stocks1 = new ArrayList<Stock>();
+    XChartPanel stockPanel,stockPanel1;
+    Chart chart,chart2;
     Timer timer;
     DatabaseAccess db;
     JLabel placeHolder = new JLabel("Please Select a stock");
@@ -25,11 +26,16 @@ public class ChartPanel extends JPanel{
         db = new DatabaseAccess();
 
         // Create Chart
-        chart = new ChartBuilder().width(800).height(600).title("Stock Game").build();
+        chart = new ChartBuilder().width(800).height(300).title("Stock Game").build();
         chart.getStyleManager().setLegendVisible(false);
+        
+        //Updated from previous version
+        //Create Noncompress Chart
+        chart2 = new ChartBuilder().width(800).height(300).title("Stock Game").build();
+        chart2.getStyleManager().setLegendVisible(false);
 
         stockPanel = new XChartPanel(chart);
-
+        stockPanel1=new XChartPanel(chart2);
         // Placeholder label
         setMinimumSize(new Dimension(800,600));
         placeHolder.setMinimumSize(new Dimension(800,600));
@@ -40,11 +46,20 @@ public class ChartPanel extends JPanel{
         if(zeroStocks){
             remove(placeHolder);
             add(stockPanel);
+            add(stockPanel1);
         }
+        //For compressed chart
         Stock stock = db.readFromDb(tickerSymbol);
         Series series = chart.addSeries(stock.tickerSymbol, stock.transientDates, stock.transientData);
         series.setMarker(SeriesMarker.NONE);
         stocks.add(stock);
+        
+        ////Updated from previous version
+        //For non compressed chart
+        Stock stock1 = db.readFromDb(tickerSymbol);
+        Series series1 = chart2.addSeries(stock1.tickerSymbol, stock1.transientDates, stock1.transientData);
+        series1.setMarker(SeriesMarker.NONE);
+        stocks1.add(stock1);
     }
     
     public double buyStock() {
@@ -56,10 +71,91 @@ public class ChartPanel extends JPanel{
             //	buyData.add(s.buyPrice);
             //}
             //Series series = chart.addSeries("app", s.transientDates, buyData);
-            DecimalFormat df = new DecimalFormat("#.##");
-            MainGame.stockAL.get(i).setText((s.tickerSymbol + " : " + s.buyPrice + " : " + s.sellPrice + " : " + df.format(s.valueChange)));
+            if(s.tickerSymbol.equals("aapl"))
+            {
+            	if(MainGame.AAPLCheck.isSelected())
+            	{
+            		DecimalFormat df = new DecimalFormat("#.##");
+                    MainGame.stockAL.get(i).setText((s.tickerSymbol + " : " + s.buyPrice + " : " + s.sellPrice + " : " + df.format(s.valueChange)));
+            	}
+            }
+            else if(s.tickerSymbol.equals("coke"))
+            {
+            	if(MainGame.COKECheck.isSelected())
+            	{
+            		DecimalFormat df = new DecimalFormat("#.##");
+                    MainGame.stockAL.get(i).setText((s.tickerSymbol + " : " + s.buyPrice + " : " + s.sellPrice + " : " + df.format(s.valueChange)));
+            	}
+            }
+            else if(s.tickerSymbol.equals("nke"))
+            {
+            	if(MainGame.NKECheck.isSelected())
+            	{
+            		DecimalFormat df = new DecimalFormat("#.##");
+                    MainGame.stockAL.get(i).setText((s.tickerSymbol + " : " + s.buyPrice + " : " + s.sellPrice + " : " + df.format(s.valueChange)));
+            	}
+            }
+            else if(s.tickerSymbol.equals("bac"))
+            {
+            	if(MainGame.BACCheck.isSelected())
+            	{
+            		DecimalFormat df = new DecimalFormat("#.##");
+                    MainGame.stockAL.get(i).setText((s.tickerSymbol + " : " + s.buyPrice + " : " + s.sellPrice + " : " + df.format(s.valueChange)));
+            	}
+            }
+            else if(s.tickerSymbol.equals("cop"))
+            {
+            	if(MainGame.COPCheck.isSelected())
+            	{
+            		DecimalFormat df = new DecimalFormat("#.##");
+                    MainGame.stockAL.get(i).setText((s.tickerSymbol + " : " + s.buyPrice + " : " + s.sellPrice + " : " + df.format(s.valueChange)));
+            	}
+            }
+            else if(s.tickerSymbol.equals("cost"))
+            {
+            	if(MainGame.COSTCheck.isSelected())
+            	{
+            		DecimalFormat df = new DecimalFormat("#.##");
+                    MainGame.stockAL.get(i).setText((s.tickerSymbol + " : " + s.buyPrice + " : " + s.sellPrice + " : " + df.format(s.valueChange)));
+            	}
+            }
+            else if(s.tickerSymbol.equals("dis"))
+            {
+            	if(MainGame.DISCheck.isSelected())
+            	{
+            		DecimalFormat df = new DecimalFormat("#.##");
+                    MainGame.stockAL.get(i).setText((s.tickerSymbol + " : " + s.buyPrice + " : " + s.sellPrice + " : " + df.format(s.valueChange)));
+            	}
+            }
+            else if(s.tickerSymbol.equals("f"))
+            {
+            	if(MainGame.FCheck.isSelected())
+            	{
+            		DecimalFormat df = new DecimalFormat("#.##");
+                    MainGame.stockAL.get(i).setText((s.tickerSymbol + " : " + s.buyPrice + " : " + s.sellPrice + " : " + df.format(s.valueChange)));
+            	}
+            }
+            else if(s.tickerSymbol.equals("msft"))
+            {
+            	if(MainGame.MSFTCheck.isSelected())
+            	{
+            		DecimalFormat df = new DecimalFormat("#.##");
+                    MainGame.stockAL.get(i).setText((s.tickerSymbol + " : " + s.buyPrice + " : " + s.sellPrice + " : " + df.format(s.valueChange)));
+            	}
+            }
+            else if(s.tickerSymbol.equals("yhoo"))
+            {
+            	if(MainGame.YHOOCheck.isSelected())
+            	{
+            		DecimalFormat df = new DecimalFormat("#.##");
+                    MainGame.stockAL.get(i).setText((s.tickerSymbol + " : " + s.buyPrice + " : " + s.sellPrice + " : " + df.format(s.valueChange)));
+            	}
+            }
+            
             i++;
         }
+    	
+    	
     	return currentPrice;
     }
     
@@ -67,14 +163,138 @@ public class ChartPanel extends JPanel{
     	int i = 0;
     	for(Stock s: stocks){
             s.sell();
-            
-            DecimalFormat df = new DecimalFormat("#.##");
-            MainGame.stockAL.get(i).setText((s.tickerSymbol + " : " + s.buyPrice + " : " + s.sellPrice + " : " + df.format(s.valueChange)));
-            if(s.valueChange > 0){
-            	MainGame.stockAL.get(i).setForeground(Color.GREEN);
-            } else {
-            	MainGame.stockAL.get(i).setForeground(Color.RED);
+            if(s.tickerSymbol.equals("aapl"))
+            {
+            	if(MainGame.AAPLCheck.isSelected())
+            	{
+            		DecimalFormat df = new DecimalFormat("#.##");
+                    MainGame.stockAL.get(i).setText((s.tickerSymbol + " : " + s.buyPrice + " : " + s.sellPrice + " : " + df.format(s.valueChange)));
+                    if(s.valueChange > 0){
+                    	MainGame.stockAL.get(i).setForeground(Color.GREEN);
+                    } else {
+                    	MainGame.stockAL.get(i).setForeground(Color.RED);
+                    }
+            	}
             }
+            else if(s.tickerSymbol.equals("coke"))
+            {
+            	if(MainGame.COKECheck.isSelected())
+            	{
+            		DecimalFormat df = new DecimalFormat("#.##");
+                    MainGame.stockAL.get(i).setText((s.tickerSymbol + " : " + s.buyPrice + " : " + s.sellPrice + " : " + df.format(s.valueChange)));
+                    if(s.valueChange > 0){
+                    	MainGame.stockAL.get(i).setForeground(Color.GREEN);
+                    } else {
+                    	MainGame.stockAL.get(i).setForeground(Color.RED);
+                    }
+            	}
+            }
+            else if(s.tickerSymbol.equals("nke"))
+            {
+            	if(MainGame.NKECheck.isSelected())
+            	{
+            		DecimalFormat df = new DecimalFormat("#.##");
+                    MainGame.stockAL.get(i).setText((s.tickerSymbol + " : " + s.buyPrice + " : " + s.sellPrice + " : " + df.format(s.valueChange)));
+                    if(s.valueChange > 0){
+                    	MainGame.stockAL.get(i).setForeground(Color.GREEN);
+                    } else {
+                    	MainGame.stockAL.get(i).setForeground(Color.RED);
+                    }
+            	}
+            }
+            else if(s.tickerSymbol.equals("bac"))
+            {
+            	if(MainGame.BACCheck.isSelected())
+            	{
+            		DecimalFormat df = new DecimalFormat("#.##");
+                    MainGame.stockAL.get(i).setText((s.tickerSymbol + " : " + s.buyPrice + " : " + s.sellPrice + " : " + df.format(s.valueChange)));
+                    if(s.valueChange > 0){
+                    	MainGame.stockAL.get(i).setForeground(Color.GREEN);
+                    } else {
+                    	MainGame.stockAL.get(i).setForeground(Color.RED);
+                    }
+            	}
+            }
+            else if(s.tickerSymbol.equals("cop"))
+            {
+            	if(MainGame.COPCheck.isSelected())
+            	{
+            		DecimalFormat df = new DecimalFormat("#.##");
+                    MainGame.stockAL.get(i).setText((s.tickerSymbol + " : " + s.buyPrice + " : " + s.sellPrice + " : " + df.format(s.valueChange)));
+                    if(s.valueChange > 0){
+                    	MainGame.stockAL.get(i).setForeground(Color.GREEN);
+                    } else {
+                    	MainGame.stockAL.get(i).setForeground(Color.RED);
+                    }
+            	}
+            }
+            else if(s.tickerSymbol.equals("cost"))
+            {
+            	if(MainGame.COSTCheck.isSelected())
+            	{
+            		DecimalFormat df = new DecimalFormat("#.##");
+                    MainGame.stockAL.get(i).setText((s.tickerSymbol + " : " + s.buyPrice + " : " + s.sellPrice + " : " + df.format(s.valueChange)));
+                    if(s.valueChange > 0){
+                    	MainGame.stockAL.get(i).setForeground(Color.GREEN);
+                    } else {
+                    	MainGame.stockAL.get(i).setForeground(Color.RED);
+                    }
+            	}
+            }
+            else if(s.tickerSymbol.equals("dis"))
+            {
+            	if(MainGame.DISCheck.isSelected())
+            	{
+            		DecimalFormat df = new DecimalFormat("#.##");
+                    MainGame.stockAL.get(i).setText((s.tickerSymbol + " : " + s.buyPrice + " : " + s.sellPrice + " : " + df.format(s.valueChange)));
+                    if(s.valueChange > 0){
+                    	MainGame.stockAL.get(i).setForeground(Color.GREEN);
+                    } else {
+                    	MainGame.stockAL.get(i).setForeground(Color.RED);
+                    }
+            	}
+            }
+            else if(s.tickerSymbol.equals("f"))
+            {
+            	if(MainGame.FCheck.isSelected())
+            	{
+            		DecimalFormat df = new DecimalFormat("#.##");
+                    MainGame.stockAL.get(i).setText((s.tickerSymbol + " : " + s.buyPrice + " : " + s.sellPrice + " : " + df.format(s.valueChange)));
+                    if(s.valueChange > 0){
+                    	MainGame.stockAL.get(i).setForeground(Color.GREEN);
+                    } else {
+                    	MainGame.stockAL.get(i).setForeground(Color.RED);
+                    }
+            	}
+            }
+            else if(s.tickerSymbol.equals("msft"))
+            {
+            	if(MainGame.MSFTCheck.isSelected())
+            	{
+            		DecimalFormat df = new DecimalFormat("#.##");
+                    MainGame.stockAL.get(i).setText((s.tickerSymbol + " : " + s.buyPrice + " : " + s.sellPrice + " : " + df.format(s.valueChange)));
+                    if(s.valueChange > 0){
+                    	MainGame.stockAL.get(i).setForeground(Color.GREEN);
+                    } else {
+                    	MainGame.stockAL.get(i).setForeground(Color.RED);
+                    }
+            	}
+            }
+            else if(s.tickerSymbol.equals("yhoo"))
+            {
+            	if(MainGame.YHOOCheck.isSelected())
+            	{
+            		DecimalFormat df = new DecimalFormat("#.##");
+                    MainGame.stockAL.get(i).setText((s.tickerSymbol + " : " + s.buyPrice + " : " + s.sellPrice + " : " + df.format(s.valueChange)));
+                    if(s.valueChange > 0){
+                    	MainGame.stockAL.get(i).setForeground(Color.GREEN);
+                    } else {
+                    	MainGame.stockAL.get(i).setForeground(Color.RED);
+                    }
+            	}
+            }
+           
+            
             i++;
         }
     	return currentPrice;
@@ -87,16 +307,30 @@ public class ChartPanel extends JPanel{
 
     class EventLoop extends TimerTask {
         public void run() {
-            for(Stock s: stocks){
+        	//For compressed graph
+            for(Stock s: stocks ){
                 if(!s.hasNext()){
                     timer.cancel();
                 }
                 s.update();
                 stockPanel.updateSeries(s.tickerSymbol, s.transientDates, s.transientData);
+                
                 //for(int j=0; j < s.transientDates.size(); j++){
                 //	s.buyData.add(10.0);
                 //}
                 //stockPanel.updateSeries(s.tickerSymbol, s.transientDates, s.buyData);
+            }
+            
+            ////Updated from previous version
+            //For non compressed graph
+            for(Stock s1: stocks1 ){
+                if(!s1.hasNext()){
+                    timer.cancel();
+                }
+                
+                s1.updateNonCompressedChart();
+                stockPanel1.updateSeries(s1.tickerSymbol, s1.transientDates, s1.transientData);
+              
             }
         }
     }
