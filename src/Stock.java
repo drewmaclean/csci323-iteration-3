@@ -35,6 +35,11 @@ public class Stock {
         // add two elements to each chart
         update();
         update();
+        
+        
+        ////updated from previous versions
+        updateNonCompressedChart(); 
+        updateNonCompressedChart();
     }
 
     public void update() {
@@ -42,6 +47,19 @@ public class Stock {
         transientDates.add(dates.get(i));
         transientData.add(data.get(i));
         i--;
+       
+    }
+    ////Updated from previous versions
+    public void updateNonCompressedChart() {
+    	
+        transientDates.add(dates.get(i));
+        transientData.add(data.get(i));
+        i--;
+       
+        while(transientDates.size()>10){
+        transientDates.remove(0);
+        transientData.remove(0);
+        }
     }
     
     public void buy() {
@@ -61,3 +79,4 @@ public class Stock {
         return i > 0;
     }
 }
+    
