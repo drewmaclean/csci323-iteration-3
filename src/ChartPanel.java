@@ -13,6 +13,7 @@ public class ChartPanel extends JPanel{
 
     ArrayList<Stock> stocks = new ArrayList<Stock>();
     ArrayList<Stock> stocks1 = new ArrayList<Stock>();
+    ArrayList<SeriesColor> seriesColorAL = new ArrayList<SeriesColor>();
     XChartPanel stockPanel,stockPanel1;
     Chart chart,chart2;
     Timer timer;
@@ -23,8 +24,13 @@ public class ChartPanel extends JPanel{
     JLabel stockPrice;
 
     public ChartPanel() throws SQLException, ClassNotFoundException, ParseException {
-
-        setBackground(Color.WHITE);
+    	
+    	seriesColorAL.add(SeriesColor.BLUE);
+    	seriesColorAL.add(SeriesColor.GREEN);
+    	seriesColorAL.add(SeriesColor.PURPLE);
+    	seriesColorAL.add(SeriesColor.ORANGE);
+        
+    	setBackground(Color.WHITE);
 
         db = new DatabaseAccess();
 
@@ -32,11 +38,13 @@ public class ChartPanel extends JPanel{
         chart = new ChartBuilder().theme(ChartTheme.GGPlot2).width(800).height(300).title("Stock price USD").build();
         chart.getStyleManager().setLegendPosition(LegendPosition.InsideNW);
         chart.getStyleManager().setLegendVisible(true);
+        chart.getStyleManager().setDecimalPattern("#0.00");
         
         //Updated from previous version
         //Create Noncompress Chart
         chart2 = new ChartBuilder().theme(ChartTheme.GGPlot2).width(800).height(300).title("30 day moving window").build();
         chart2.getStyleManager().setLegendVisible(false);
+        chart2.getStyleManager().setDecimalPattern("#0.00");
 
         stockPanel  = new XChartPanel(chart);
         stockPanel1 = new XChartPanel(chart2);
@@ -59,11 +67,13 @@ public class ChartPanel extends JPanel{
                                         stock.transientNonCompressedDates,
                                         stock.transientNonCompressedData);
         series.setMarker(SeriesMarker.NONE);
+        series.setLineColor(seriesColorAL.get(stocks.size())); // Check how many stocks have been added and get a color
 
 
         // add indicator
         Series indicatorSeries = chart.addSeries(stock.tickerSymbol+" ind", stock.indicatorDates, stock.indicatorData);
         indicatorSeries.setMarker(SeriesMarker.NONE);
+        indicatorSeries.setLineColor(SeriesColor.RED); // all indicator lines will be red
 
 
         // Add to compressed chart
@@ -71,6 +81,7 @@ public class ChartPanel extends JPanel{
                 stock.transientCompressedDates,
                 stock.transientCompressedData);
         series1.setMarker(SeriesMarker.NONE);
+        series1.setLineColor(seriesColorAL.get(stocks.size())); // Check how many stocks have been added and get a color
 
 
         stocks.add(stock);
