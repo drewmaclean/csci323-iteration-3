@@ -324,6 +324,10 @@ public class ChartPanel extends JPanel{
         timer = new Timer();
         timer.scheduleAtFixedRate(new EventLoop(), 0, Speed);
     }
+    
+    public void pause(){
+    	timer.cancel();
+    }
 
     class EventLoop extends TimerTask {
         public void run() {

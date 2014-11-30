@@ -73,19 +73,19 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
         jsp.setBounds(10, 90, 120, 150);
         add(jsp);
 
-        playButton = new JButton("play");
+        playButton = new JButton("Play");
         playButton.setEnabled(false);
         playButton.addActionListener(this);
         playButton.setBounds(10, 270, 100, 30);
         add(playButton);
         
-        BuyButton = new JButton("buy");
+        BuyButton = new JButton("Buy");
         BuyButton.addActionListener(this);
         BuyButton.setBounds(10, 310, 100, 30);
         add(BuyButton);
         BuyButton.setEnabled(false);
         
-        SellButton = new JButton("sell");
+        SellButton = new JButton("Sell");
         SellButton.addActionListener(this);
         SellButton.setBounds(10, 350, 100, 30);
         add(SellButton);
@@ -96,7 +96,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
         add(movingAverageLbl);
         
         movingAverageCB = new JComboBox<Integer>();
-        movingAverageCB.setModel(new DefaultComboBoxModel(new Integer[] {10,25,50,100}));
+        movingAverageCB.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {10,25,50,100}));
         movingAverageCB.setToolTipText("");
         movingAverageCB.setBounds(150, 35, 100, 20);
         add(movingAverageCB);
@@ -175,6 +175,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
         
         SpeedLabel.setBounds(163, 249, 89, 14);
         add(SpeedLabel);
+        
     }
 
     private JCheckBox StockCheckBox(String s){
@@ -187,9 +188,19 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
     public void actionPerformed(ActionEvent e) {
     	
     	if(e.getSource() == playButton) {
-    		cp.play(Speed);
-    		playButton.setEnabled(false);
-    		BuyButton.setEnabled(true);
+    		if(e.getActionCommand().equals("Play")) {
+    			cp.play(Speed);
+    			playButton.setText("Pause");
+    			BuyButton.setEnabled(true);
+    		}
+    		else if(e.getActionCommand().equals("Pause")) {
+    			cp.pause();
+    			playButton.setText("Resume");
+    		}
+    		else if(e.getActionCommand().equals("Resume")) {
+    			cp.play(Speed);
+            	playButton.setText("Pause");
+    		}
     	}
     	else if(e.getSource() == BuyButton) {
     		cp.buyStock();
