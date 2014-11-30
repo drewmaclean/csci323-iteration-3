@@ -1,6 +1,8 @@
 //import javafx.scene.control.Tooltip;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -10,9 +12,10 @@ import java.awt.event.ItemListener;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 
-public class MainGame extends JPanel implements ActionListener, ItemListener {
+public class MainGame extends JPanel implements ActionListener, ItemListener, ChangeListener {
 
     //Define our global scale variables
 	static ArrayList<JLabel> stockAL = new ArrayList<JLabel>();
@@ -38,12 +41,18 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
     static JCheckBox MSFTCheck = new JCheckBox("MSFT");
     static JCheckBox YHOOCheck = new JCheckBox("YHOO");
     
+    JSlider speedSldr;
+    private int speedMin = 50;
+    private int speedMax = 300;
+    private int speedStart = 150;
+    private int speedIncrement = 50;
+    
     JButton SlowSpeedButton = new JButton("Slow");
     JButton MediumSpeedButton = new JButton("Medium");
     JButton FastSpeedButton = new JButton("Fast");
     JLabel SpeedLabel = new JLabel("Choose Speed");
     
-    int Speed = 0;
+    int Speed = speedStart;
     
     JCheckBoxList cbList = new JCheckBoxList();
 
@@ -76,18 +85,18 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
         playButton = new JButton("Play");
         playButton.setEnabled(false);
         playButton.addActionListener(this);
-        playButton.setBounds(10, 270, 100, 30);
+        playButton.setBounds(10, 300, 100, 30);
         add(playButton);
         
         BuyButton = new JButton("Buy");
         BuyButton.addActionListener(this);
-        BuyButton.setBounds(10, 310, 100, 30);
+        BuyButton.setBounds(10, 340, 100, 30);
         add(BuyButton);
         BuyButton.setEnabled(false);
         
         SellButton = new JButton("Sell");
         SellButton.addActionListener(this);
-        SellButton.setBounds(10, 350, 100, 30);
+        SellButton.setBounds(10, 380, 100, 30);
         add(SellButton);
         SellButton.setEnabled(false);
         
@@ -104,12 +113,12 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
         movingAverageCB.setSelectedIndex(0);
         
         stockPriceLabel = new JLabel("Name - Buy - Sell - Profit");
-        stockPriceLabel.setBounds(10, 404, 200, 30);
+        stockPriceLabel.setBounds(10, 420, 200, 30);
         add(stockPriceLabel);
         
         for (int i = 0; i < 10; i++) {
         	stockAL.add(stockPriceLabel = new JLabel());
-        	stockAL.get(i).setBounds(10, (420 + (i * 20)), 200, 30);
+        	stockAL.get(i).setBounds(10, (440 + (i * 20)), 200, 30);
         	add(stockAL.get(i));
         }
 
@@ -161,21 +170,18 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
         lblNewLabel.setBounds(136, 70, 97, 14);
         add(lblNewLabel);
         
-        SlowSpeedButton.setBounds(163, 274, 89, 23);
-        add(SlowSpeedButton);
-        SlowSpeedButton.addActionListener(this);
-        
-        MediumSpeedButton.setBounds(163, 314, 89, 23);
-        add(MediumSpeedButton);
-        MediumSpeedButton.addActionListener(this);
-        
-        FastSpeedButton.setBounds(163, 354, 89, 23);
-        add(FastSpeedButton);
-        FastSpeedButton.addActionListener(this);
-        
-        SpeedLabel.setBounds(163, 249, 89, 14);
-        add(SpeedLabel);
-        
+        Hashtable speedTable = new Hashtable();
+        speedTable.put(new Integer(speedMin), new JLabel("Fast"));
+        speedTable.put(new Integer(speedMax), new JLabel("Slow"));
+        speedSldr = new JSlider(JSlider.HORIZONTAL, speedMin, speedMax, speedStart);
+        speedSldr.setMajorTickSpacing(speedIncrement);
+        speedSldr.setLabelTable(speedTable);
+        speedSldr.setInverted(true);
+        speedSldr.setPaintTicks(true);
+        speedSldr.setPaintLabels(true);
+        speedSldr.setBounds(10, 240, 150, 50);
+        add(speedSldr);
+        speedSldr.addChangeListener(this);
     }
 
     private JCheckBox StockCheckBox(String s){
@@ -212,30 +218,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
     		SellButton.setEnabled(false);
     		BuyButton.setEnabled(true);
     	}
-    	else if(e.getSource() == SlowSpeedButton) {
-    		Speed = 200;
-    		playButton.setEnabled(true);
-    		SlowSpeedButton.setEnabled(false);
-    		MediumSpeedButton.setEnabled(false);
-    		FastSpeedButton.setEnabled(false);
-    		SpeedLabel.setVisible(false);
-    	}
-    	else if(e.getSource() == MediumSpeedButton) {
-    		Speed = 100;
-    		playButton.setEnabled(true);
-    		SlowSpeedButton.setEnabled(false);
-    		MediumSpeedButton.setEnabled(false);
-    		FastSpeedButton.setEnabled(false);
-    		SpeedLabel.setVisible(false);
-    	}
-    	else if(e.getSource() == FastSpeedButton) {
-    		Speed = 50;
-    		playButton.setEnabled(true);
-    		SlowSpeedButton.setEnabled(false);
-    		MediumSpeedButton.setEnabled(false);
-    		FastSpeedButton.setEnabled(false);
-    		SpeedLabel.setVisible(false);
-    	}
+
     	else if(e.getSource() == movingAverageCB) {
     		if (movingAverageCB.getSelectedIndex() == 0){
     			movingAverageSelected = 10;
@@ -258,6 +241,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
         
         AmountList = new ArrayList<String>();
         if(c.isSelected()){
+        	playButton.setEnabled(true);
         	AmountList = new ArrayList<String>();
         	if(c.getText().equals("AAPL"))
         	{
@@ -303,6 +287,20 @@ public class MainGame extends JPanel implements ActionListener, ItemListener {
             this.updateUI();
         }
     }
+    
+    @Override
+	public void stateChanged(ChangeEvent e) {
+		JSlider source = (JSlider)e.getSource();
+		if (!source.getValueIsAdjusting()) {
+			Speed = (int)source.getValue();
+			if (cp.isRunning()) {
+				cp.pause();
+				cp.play(Speed);
+			}
+			
+		}
+		
+	}
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException, ParseException {
 

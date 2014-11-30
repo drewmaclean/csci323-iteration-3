@@ -22,6 +22,7 @@ public class ChartPanel extends JPanel{
     boolean zeroStocks = true;
     double currentPrice = 0;
     JLabel stockPrice;
+    boolean running = false;
 
     public ChartPanel() throws SQLException, ClassNotFoundException, ParseException {
     	
@@ -323,10 +324,16 @@ public class ChartPanel extends JPanel{
     public void play(int Speed) {
         timer = new Timer();
         timer.scheduleAtFixedRate(new EventLoop(), 0, Speed);
+        running = true;
     }
     
     public void pause(){
     	timer.cancel();
+    	running = false;
+    }
+    
+    public boolean isRunning() {
+    	return running;
     }
 
     class EventLoop extends TimerTask {
