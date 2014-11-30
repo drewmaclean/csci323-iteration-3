@@ -1,5 +1,8 @@
 import com.xeiam.xchart.*;
-import com.xeiam.xchart.StyleManager.*;
+import com.xeiam.xchart.StyleManager.ChartTheme;
+import com.xeiam.xchart.StyleManager.LegendPosition;
+
+import javax.swing.*;
 import java.awt.*;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -7,7 +10,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-import javax.swing.*;
 
 public class ChartPanel extends JPanel{
 
@@ -323,7 +325,7 @@ public class ChartPanel extends JPanel{
     
     public void play(int Speed) {
         timer = new Timer();
-        timer.scheduleAtFixedRate(new EventLoop(), 0, Speed);
+        timer.scheduleAtFixedRate(new EventLoop(), 0, Math.abs(Speed));
         running = true;
     }
     

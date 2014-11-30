@@ -3,7 +3,6 @@
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,8 +11,8 @@ import java.awt.event.ItemListener;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Arrays;
+import java.util.Hashtable;
 
 
 public class MainGame extends JPanel implements ActionListener, ItemListener, ChangeListener {
@@ -60,18 +59,9 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
     private int speedStart = 150;
     private int speedIncrement = 50;
     
-    JButton SlowSpeedButton = new JButton("Slow");
-    JButton MediumSpeedButton = new JButton("Medium");
-    JButton FastSpeedButton = new JButton("Fast");
-    JLabel SpeedLabel = new JLabel("Choose Speed");
-    
-
-    int num_selected = 0;
-    boolean running = false;
-
     ArrayList<JCheckBox> stocks;
 
-    int Speed = 0;
+    int Speed = speedStart;
     
     JCheckBoxList cbList = new JCheckBoxList();
 
@@ -94,7 +84,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
 
         stocks = new ArrayList<JCheckBox>();
 
-        stocks.addAll(Arrays.asList(new JCheckBox[] {appl, bac, coke, cop, cost, dis, f, msft, nke, yhoo}));
+        stocks.addAll(Arrays.asList(new JCheckBox[]{appl, bac, coke, cop, cost, dis, f, msft, nke, yhoo}));
 
         cbList.setListData(stocks.toArray(new JCheckBox[stocks.size()]));
 
@@ -207,6 +197,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
     private JCheckBox StockCheckBox(String s){
         JCheckBox check = new JCheckBox(s);
         check.addItemListener(this);
+
         return check;
     }
 
@@ -215,16 +206,31 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
     	
     	if(e.getSource() == playButton) {
     		if(e.getActionCommand().equals("Play")) {
-    			cp.play(Speed);
-    			playButton.setText("Pause");
-    			BuyButton.setEnabled(true);
-    		}
-    		else if(e.getActionCommand().equals("Pause")) {
-    			cp.pause();
+                ArrayList<JCheckBox> toRemove = new ArrayList<JCheckBox>();
+                for (JCheckBox s : stocks) {
+                    if (s.isSelected()) {
+                        cp.addStock(s.getText().toLowerCase());
+                        s.setSelected(false);
+                    } else {
+                        toRemove.add(s);
+                    }
+                }
+
+                for (JCheckBox r : toRemove) {
+                    stocks.remove(r);
+                }
+
+                cbList.setListData(stocks.toArray(new JCheckBox[stocks.size()]));
+                cbList.updateUI();
+
+                playButton.setText("Pause");
+                BuyButton.setEnabled(true);
+                cp.play(Speed);
+            } else if (e.getActionCommand().equals("Pause")) {
+                cp.pause();
     			playButton.setText("Resume");
-    		}
-    		else if(e.getActionCommand().equals("Resume")) {
-    			cp.play(Speed);
+    		} else if (e.getActionCommand().equals("Resume")) {
+                cp.play(Speed);
             	playButton.setText("Pause");
     		}
     	}
@@ -259,8 +265,8 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
     public void itemStateChanged(ItemEvent e) {
         JCheckBox c = (JCheckBox) e.getSource();
 
-        if (!running) {
-            num_selected = 0;
+        if (!cp.running) {
+            int num_selected = 0;
 
             for (JCheckBox s : stocks) {
                 if (s.isSelected()) num_selected++;
@@ -270,6 +276,8 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
                 JOptionPane.showMessageDialog(null,"select a maximum of 4");
                 return;
             }
+        } else {
+            return;
         }
 
         AmountList = new ArrayList<String>();
@@ -316,7 +324,6 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
         	{
         		YHOOCheck.setEnabled(true);
         	}
-            cp.addStock(c.getText().toLowerCase());
             this.updateUI();
         }
     }
