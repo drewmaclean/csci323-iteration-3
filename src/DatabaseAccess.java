@@ -25,11 +25,11 @@ public class DatabaseAccess {
 
     public DatabaseAccess() throws SQLException, ClassNotFoundException, ParseException {
         driverName = "org.gjt.mm.mysql.Driver";
-        serverName = "sql5.freemysqlhosting.net";
-        schema = "sql555866";
+        serverName = "sql2.freemysqlhosting.net";
+        schema = "sql259872";
         url = "jdbc:mysql://" + serverName +  "/" + schema;
-        userName = "sql555866";
-        password = "vL3*mR8%";
+        userName = "sql259872";
+        password = "wT2!zE5%";
         Class.forName(driverName);
 
         stocks = new HashMap<String, Stock>();

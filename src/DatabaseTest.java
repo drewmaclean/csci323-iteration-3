@@ -9,11 +9,11 @@ import java.util.Date;
 
 public class DatabaseTest extends TestCase {
 	private static String driverName= "org.gjt.mm.mysql.Driver";
-	private static String serverName= "sql5.freemysqlhosting.net";
-	private static String schema= "sql555866";
-	private static String userName="sql555866";
+	private static String serverName= "sql2.freemysqlhosting.net";
+	private static String schema= "sql259872";
+	private static String userName="sql259872";
 	private static String url= "jdbc:mysql://" + serverName +  "/" + schema;
-	private static String password= "vL3*mR8%";
+	private static String password= "wT2!zE5%";
 
 
 	public void testConnection() throws Exception {
