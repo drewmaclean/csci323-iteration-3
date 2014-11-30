@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Arrays;
 
 
 public class MainGame extends JPanel implements ActionListener, ItemListener, ChangeListener {
@@ -24,6 +25,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
 			BuyButton,
 			SellButton;
 	public JLabel stockPriceLabel;
+
 
     public static int movingAverageSelected = 0;
     JLabel movingAverageLbl;
@@ -40,6 +42,17 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
     static JCheckBox FCheck = new JCheckBox("F");
     static JCheckBox MSFTCheck = new JCheckBox("MSFT");
     static JCheckBox YHOOCheck = new JCheckBox("YHOO");
+
+    JCheckBox appl = StockCheckBox("AAPL");
+    JCheckBox bac  = StockCheckBox("BAC");
+    JCheckBox coke = StockCheckBox("COKE");
+    JCheckBox cop  = StockCheckBox("COP");
+    JCheckBox cost = StockCheckBox("COST");
+    JCheckBox dis  = StockCheckBox("DIS");
+    JCheckBox f    = StockCheckBox("F");
+    JCheckBox msft = StockCheckBox("MSFT");
+    JCheckBox nke  = StockCheckBox("NKE");
+    JCheckBox yhoo = StockCheckBox("YHOO");
     
     JSlider speedSldr;
     private int speedMin = 50;
@@ -52,7 +65,13 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
     JButton FastSpeedButton = new JButton("Fast");
     JLabel SpeedLabel = new JLabel("Choose Speed");
     
-    int Speed = speedStart;
+
+    int num_selected = 0;
+    boolean running = false;
+
+    ArrayList<JCheckBox> stocks;
+
+    int Speed = 0;
     
     JCheckBoxList cbList = new JCheckBoxList();
 
@@ -73,10 +92,11 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
         lblStockInformation.setBounds(15, 70, 120, 14);
         add(lblStockInformation);
 
-        JCheckBox[] stocks = {StockCheckBox("AAPL"), StockCheckBox("BAC"), StockCheckBox("COKE"),
-                StockCheckBox("COP"), StockCheckBox("COST"), StockCheckBox("DIS"), StockCheckBox("F"),
-                StockCheckBox("MSFT"), StockCheckBox("NKE"), StockCheckBox("YHOO")};
-        cbList.setListData(stocks);
+        stocks = new ArrayList<JCheckBox>();
+
+        stocks.addAll(Arrays.asList(new JCheckBox[] {appl, bac, coke, cop, cost, dis, f, msft, nke, yhoo}));
+
+        cbList.setListData(stocks.toArray(new JCheckBox[stocks.size()]));
 
         JScrollPane jsp = new JScrollPane(cbList);
         jsp.setBounds(10, 90, 120, 150);
@@ -238,7 +258,20 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
     @Override
     public void itemStateChanged(ItemEvent e) {
         JCheckBox c = (JCheckBox) e.getSource();
-        
+
+        if (!running) {
+            num_selected = 0;
+
+            for (JCheckBox s : stocks) {
+                if (s.isSelected()) num_selected++;
+            }
+            if (num_selected >= 5) {
+                c.setSelected(false);
+                JOptionPane.showMessageDialog(null,"select a maximum of 4");
+                return;
+            }
+        }
+
         AmountList = new ArrayList<String>();
         if(c.isSelected()){
         	playButton.setEnabled(true);

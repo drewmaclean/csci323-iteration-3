@@ -42,7 +42,7 @@ public class ChartPanel extends JPanel{
         chart.getStyleManager().setDecimalPattern("#0.00");
         
         //Updated from previous version
-        //Create Noncompress Chart
+        //Create non-compressed Chart
         chart2 = new ChartBuilder().theme(ChartTheme.GGPlot2).width(800).height(300).title("30 day moving window").build();
         chart2.getStyleManager().setLegendVisible(false);
         chart2.getStyleManager().setDecimalPattern("#0.00");
