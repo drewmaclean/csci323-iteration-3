@@ -26,6 +26,7 @@ public class ChartPanel extends JPanel {
     JLabel stockPrice;
     boolean running = false;
     MainGame mg;
+    //Series buyIndicatorSeries;
 
     public ChartPanel(MainGame mg) throws SQLException, ClassNotFoundException, ParseException {
 
@@ -41,14 +42,14 @@ public class ChartPanel extends JPanel {
         db = new DatabaseAccess();
 
         // Create Chart
-        chart = new ChartBuilder().theme(ChartTheme.GGPlot2).width(800).height(300).title("Stock price USD").build();
+        chart = new ChartBuilder().theme(ChartTheme.GGPlot2).width(900).height(350).title("Stock price USD").build();
         chart.getStyleManager().setLegendPosition(LegendPosition.InsideNW);
         chart.getStyleManager().setLegendVisible(true);
         chart.getStyleManager().setDecimalPattern("#0.00");
         
         //Updated from previous version
         //Create non-compressed Chart
-        chart2 = new ChartBuilder().theme(ChartTheme.GGPlot2).width(800).height(300).title("30 day moving window").build();
+        chart2 = new ChartBuilder().theme(ChartTheme.GGPlot2).width(900).height(350).title("Multi-day moving window").build();
         chart2.getStyleManager().setLegendVisible(false);
         chart2.getStyleManager().setDecimalPattern("#0.00");
 
@@ -56,8 +57,8 @@ public class ChartPanel extends JPanel {
         stockPanel1 = new XChartPanel(chart2);
 
         // Placeholder label
-        setMinimumSize(new Dimension(800,600));
-        placeHolder.setMinimumSize(new Dimension(800,600));
+        setMinimumSize(new Dimension(900,700));
+        placeHolder.setMinimumSize(new Dimension(900,700));
         add(placeHolder);
     }
 
@@ -81,6 +82,12 @@ public class ChartPanel extends JPanel {
         indicatorSeries.setMarker(SeriesMarker.NONE);
         indicatorSeries.setLineColor(SeriesColor.RED); // all indicator lines will be red
 
+        // add indicator to show where they bought
+        Series buyIndicatorSeries = chart.addSeries(stock.tickerSymbol+" buy", stock.buyIndicatorDates, stock.buyIndicatorData);
+        buyIndicatorSeries.setMarker(SeriesMarker.NONE);
+        buyIndicatorSeries.setLineColor(seriesColorAL.get(stocks.size())); 
+        buyIndicatorSeries.setLineStyle(SeriesLineStyle.DASH_DASH);
+
 
         // Add to compressed chart
         Series series1 = chart2.addSeries(stock.tickerSymbol,
@@ -88,6 +95,11 @@ public class ChartPanel extends JPanel {
                 stock.transientCompressedData);
         series1.setMarker(SeriesMarker.NONE);
         series1.setLineColor(seriesColorAL.get(stocks.size())); // Check how many MainGamestocks have been added and get a color
+        
+     // add indicator
+        Series indicatorSeries1 = chart2.addSeries(stock.tickerSymbol+" ind", stock.indicatorCompressedDates, stock.indicatorCompressedData);
+        indicatorSeries1.setMarker(SeriesMarker.NONE);
+        indicatorSeries1.setLineColor(SeriesColor.RED); // all indicator lines will be red
 
 
         stocks.add(stock);
@@ -354,6 +366,12 @@ public class ChartPanel extends JPanel {
                 stockPanel.updateSeries(s.tickerSymbol, s.transientNonCompressedDates, s.transientNonCompressedData);
                 stockPanel.updateSeries(s.tickerSymbol+" ind", s.indicatorDates, s.indicatorData);
                 stockPanel1.updateSeries(s.tickerSymbol, s.transientCompressedDates, s.transientCompressedData);
+                stockPanel1.updateSeries(s.tickerSymbol+" ind", s.indicatorCompressedDates, s.indicatorCompressedData);
+                
+                if(s.isOwned){
+                	s.updateBuyIndicator();
+                	stockPanel.updateSeries(s.tickerSymbol+" buy", s.buyIndicatorDates, s.buyIndicatorData);
+                }
 
                 //update stock
                 mg.update();

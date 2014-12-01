@@ -20,7 +20,6 @@ public class Purchase extends JLabel {
 
     public void sell() {
         sellPrice = s.currentPrice;
-        sold = true;
     }
 
     public double profit() {
