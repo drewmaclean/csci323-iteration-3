@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class ChartPanel extends JPanel{
+public class ChartPanel extends JPanel {
 
     ArrayList<Stock> stocks = new ArrayList<Stock>();
     ArrayList<Stock> stocks1 = new ArrayList<Stock>();

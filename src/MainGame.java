@@ -3,6 +3,8 @@
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,7 +17,7 @@ import java.util.Arrays;
 import java.util.Hashtable;
 
 
-public class MainGame extends JPanel implements ActionListener, ItemListener, ChangeListener {
+public class MainGame extends JPanel implements ActionListener, ItemListener, ChangeListener, ListSelectionListener {
 
     //Define our global scale variables
 	static ArrayList<JLabel> stockAL = new ArrayList<JLabel>();
@@ -34,6 +36,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
     //Purchase stuff
     JList<Purchase> purchasesJList;
     DefaultListModel model;
+    Purchase currentSelectedPurchase;
 
     
     static JCheckBox AAPLCheck = new JCheckBox("AAPL");
@@ -128,7 +131,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
         movingAverageCB.setSelectedIndex(0);
 
 
-        stockPriceLabel = new JLabel("Name, Purchase price, Current Profit");
+        stockPriceLabel = new JLabel("Name, shares, purchase, current");
         stockPriceLabel.setBounds(10, 420, 200, 30);
         add(stockPriceLabel);
 
@@ -137,6 +140,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
         purchasesJList = new JList<Purchase>();
         model = new DefaultListModel();
         purchasesJList.setModel(model);
+        purchasesJList.addListSelectionListener(this);
         JScrollPane scrollPane = new JScrollPane(purchasesJList);
         scrollPane.setBounds(10, 450, 150, 150);
         purchasesJList.setVisibleRowCount(10);
@@ -259,18 +263,14 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
             for (JCheckBox s : MainGamestocks) {
                 if (s.isSelected()) {
                     Stock s1 = cp.db.readFromDb(s.getText().toLowerCase());
-                    Purchase p = new Purchase(s1);
-                    p.setText();
-                    //purchases.add(p);
+                    Purchase p = new Purchase(s1, 1);
                     model.addElement(p);
                 }
             }
         }
     	else if(e.getSource() == SellButton) {
-    		cp.sellStock();
-    		SellButton.setEnabled(false);
-    		BuyButton.setEnabled(true);
-    	}
+            currentSelectedPurchase.sell();
+        }
 
     	else if(e.getSource() == movingAverageCB) {
     		if (movingAverageCB.getSelectedIndex() == 0){
@@ -368,10 +368,14 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
 				cp.pause();
 				cp.play(Speed);
 			}
-			
 		}
-		
 	}
+
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        currentSelectedPurchase = purchasesJList.getSelectedValue();
+        SellButton.setEnabled(true);
+    }
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException, ParseException {
 
@@ -384,4 +388,5 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
         frame.pack();
         frame.setVisible(true);
     }
+
 }
