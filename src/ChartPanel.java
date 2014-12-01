@@ -42,14 +42,14 @@ public class ChartPanel extends JPanel{
         db = new DatabaseAccess();
 
         // Create Chart
-        chart = new ChartBuilder().theme(ChartTheme.GGPlot2).width(800).height(300).title("Stock price USD").build();
+        chart = new ChartBuilder().theme(ChartTheme.GGPlot2).width(900).height(350).title("Stock price USD").build();
         chart.getStyleManager().setLegendPosition(LegendPosition.InsideNW);
         chart.getStyleManager().setLegendVisible(true);
         chart.getStyleManager().setDecimalPattern("#0.00");
         
         //Updated from previous version
         //Create non-compressed Chart
-        chart2 = new ChartBuilder().theme(ChartTheme.GGPlot2).width(800).height(300).title("Multi-day moving window").build();
+        chart2 = new ChartBuilder().theme(ChartTheme.GGPlot2).width(900).height(350).title("Multi-day moving window").build();
         chart2.getStyleManager().setLegendVisible(false);
         chart2.getStyleManager().setDecimalPattern("#0.00");
 
@@ -57,8 +57,8 @@ public class ChartPanel extends JPanel{
         stockPanel1 = new XChartPanel(chart2);
 
         // Placeholder label
-        setMinimumSize(new Dimension(800,600));
-        placeHolder.setMinimumSize(new Dimension(800,600));
+        setMinimumSize(new Dimension(900,700));
+        placeHolder.setMinimumSize(new Dimension(900,700));
         add(placeHolder);
     }
 

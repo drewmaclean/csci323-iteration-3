@@ -28,7 +28,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
 	public JLabel stockPriceLabel;
 
 
-    public static int movingAverageSelected = 0;
+    public static int movingAverageSelected = 25;
     JLabel movingAverageLbl;
     JComboBox<Integer> movingAverageCB;
     ChartPanel cp;
@@ -64,11 +64,18 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
     JCheckBox nke  = StockCheckBox("NKE");
     JCheckBox yhoo = StockCheckBox("YHOO");
     
+    JLabel speedLbl;
     JSlider speedSldr;
     private int speedMin = 50;
     private int speedMax = 300;
     private int speedStart = 150;
     private int speedIncrement = 50;
+    
+    JSlider movingAverageSldr;
+    private int movingAverageMin = 10;
+    private int movingAverageMax = 100;
+    private int movingAverageStart = 25;
+    private int movingAverageIncrement = 30;
 
     ArrayList<JCheckBox> MainGamestocks;
 
@@ -90,6 +97,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
     public MainGame() throws SQLException, ClassNotFoundException, ParseException {
         //All this is just layout stuff and declaring the event listener
         setLayout(null);
+       
         try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (InstantiationException | IllegalAccessException
@@ -101,7 +109,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
         // set background colour
         setBackground(Color.WHITE);
 
-        setPreferredSize(new Dimension(1100, 630));
+        setPreferredSize(new Dimension(1200, 720));
 
         /*
         JLabel lblChartTypes = new JLabel("Chart Types:");
@@ -110,7 +118,6 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
 		*/
 
         JLabel lblStockInformation = new JLabel("Stock Information:");
-        lblStockInformation.setBounds(15, 70, 120, 14);
         add(lblStockInformation);
 
         MainGamestocks = new ArrayList<JCheckBox>();
@@ -120,42 +127,43 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
         cbList.setListData(MainGamestocks.toArray(new JCheckBox[MainGamestocks.size()]));
 
         JScrollPane jsp = new JScrollPane(cbList);
-        jsp.setBounds(10, 90, 120, 150);
         add(jsp);
 
         playButton = new JButton("Play");
         playButton.setEnabled(false);
         playButton.addActionListener(this);
-        playButton.setBounds(10, 300, 100, 30);
+        
         add(playButton);
         
         BuyButton = new JButton("Buy");
         BuyButton.addActionListener(this);
-        BuyButton.setBounds(10, 340, 100, 30);
+        
+        BuyButton.setBackground(Color.GREEN);
         add(BuyButton);
         BuyButton.setEnabled(false);
         
         SellButton = new JButton("Sell");
         SellButton.addActionListener(this);
-        SellButton.setBounds(10, 380, 100, 30);
+        
+        SellButton.setBackground(Color.RED);
         add(SellButton);
         SellButton.setEnabled(false);
         
-        movingAverageLbl = new JLabel("Moving Average Period:");
-        movingAverageLbl.setBounds(130, 10, 150, 20);
+        movingAverageLbl = new JLabel("Moving Average Period:", SwingConstants.CENTER);
+        
         add(movingAverageLbl);
         
-        movingAverageCB = new JComboBox<Integer>();
-        movingAverageCB.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {10,25,50,100}));
-        movingAverageCB.setToolTipText("");
-        movingAverageCB.setBounds(150, 35, 100, 20);
-        add(movingAverageCB);
-        movingAverageCB.addActionListener(this);
-        movingAverageCB.setSelectedIndex(0);
-
+        movingAverageSldr = new JSlider(JSlider.HORIZONTAL, movingAverageMin, movingAverageMax, movingAverageStart);
+        movingAverageSldr.setMajorTickSpacing(movingAverageIncrement);
+        movingAverageSldr.setLabelTable(movingAverageSldr.createStandardLabels(movingAverageIncrement));
+        movingAverageSldr.setPaintTicks(true);
+        movingAverageSldr.setPaintLabels(true);
+        add(movingAverageSldr);
+        movingAverageSldr.addChangeListener(this);
+        
 
         stockPriceLabel = new JLabel("Name, Purchase price");
-        stockPriceLabel.setBounds(10, 420, 150, 30);
+        
         add(stockPriceLabel);
 
 
@@ -164,7 +172,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
         model = new DefaultListModel();
         purchasesJList.setModel(model);
         JScrollPane scrollPane = new JScrollPane(purchasesJList);
-        scrollPane.setBounds(10, 450, 150, 150);
+        
         purchasesJList.setVisibleRowCount(10);
         purchasesJList.setFixedCellHeight(15);
         purchasesJList.setFixedCellWidth(100);
@@ -179,7 +187,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
         */
 
         cp = new ChartPanel(this);
-        cp.setBounds(262,11, 800, 600);
+        
         add(cp);
         
         /*
@@ -228,6 +236,9 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
         add(lblNewLabel);
         */
         
+        speedLbl = new JLabel("Play speed:", SwingConstants.CENTER);
+        add(speedLbl);
+        
         Hashtable speedTable = new Hashtable();
         speedTable.put(new Integer(speedMin), new JLabel("Fast"));
         speedTable.put(new Integer(speedMax), new JLabel("Slow"));
@@ -237,16 +248,15 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
         speedSldr.setInverted(true);
         speedSldr.setPaintTicks(true);
         speedSldr.setPaintLabels(true);
-        speedSldr.setBounds(10, 240, 150, 50);
         add(speedSldr);
         speedSldr.addChangeListener(this);
         
         BankDisplayLabel.setVerticalAlignment(SwingConstants.TOP);
-        BankDisplayLabel.setBounds(170, 451, 74, 149);
+        
         add(BankDisplayLabel);
         
-        JLabel lblBank = new JLabel("Bank");
-        lblBank.setBounds(170, 428, 46, 14);
+        JLabel lblBank = new JLabel("Bank:");
+        
         add(lblBank);
         
     	/////////////NEW///////////////////////////
@@ -266,7 +276,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
     	MovingWindowsSlider.setPaintTicks(true);
     	MovingWindowsSlider.setPaintLabels(true);
     	MovingWindowsSlider.setLabelTable(MovingWindowsSlider.createStandardLabels(10));
-    	MovingWindowsSlider.setBounds(15, 30, 150, 40);
+    	
     	MovingWindowsSlider.addChangeListener(new ChangeListener(){
     		@Override
     		public void stateChanged( ChangeEvent event )
@@ -280,10 +290,34 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
     	}
     	});;
     	add(MovingWindowsSlider);
-    	JLabel MovingWindowlbl = new JLabel("Moving Window:");
-        MovingWindowlbl.setBounds(15, 10, 150, 20);
+    	JLabel MovingWindowlbl = new JLabel("Moving Window Timeframe:", SwingConstants.CENTER);
+        
         add(MovingWindowlbl);
     	/////////////////////////////END/////////////////////////////
+        // X loc, Y loc, width, height
+        cp.setBounds(250, 0, 980, 700);
+        
+        lblStockInformation.setBounds(15, 15, 120, 15);
+        jsp.setBounds(15, 40, 100, 200);
+        stockPriceLabel.setBounds(130, 15, 150, 20);
+        scrollPane.setBounds(130, 40, 110, 200);
+        
+        playButton.setBounds(15, 270, 100, 30);
+        BuyButton.setBounds(15, 310, 100, 30);
+        SellButton.setBounds(15, 350, 100, 30);
+        
+        lblBank.setBounds(180, 280, 100, 20);
+        BankDisplayLabel.setBounds(170, 300, 74, 150);
+        
+        speedLbl.setBounds(15, 410, 200, 20);
+        speedSldr.setBounds(15, 430, 200, 50);
+        
+        movingAverageLbl.setBounds(15, 510, 200, 20);
+        movingAverageSldr.setBounds(15, 530, 200, 50);
+        
+        MovingWindowlbl.setBounds(15, 610, 200, 20);
+        MovingWindowsSlider.setBounds(15, 630, 200, 50);
+        
     }
 
     private JCheckBox StockCheckBox(String s){
@@ -346,20 +380,6 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
     		BuyButton.setEnabled(true);
     	}
 
-    	else if(e.getSource() == movingAverageCB) {
-    		if (movingAverageCB.getSelectedIndex() == 0){
-    			movingAverageSelected = 10;
-    		}
-    		else if (movingAverageCB.getSelectedIndex() == 1){
-    			movingAverageSelected = 25;
-    		}
-    		else if (movingAverageCB.getSelectedIndex() == 2){
-    			movingAverageSelected = 50;
-    		}
-    		else if (movingAverageCB.getSelectedIndex() == 3){
-    			movingAverageSelected = 100;
-    		}
-    	}
     }
 
     public void update() {
@@ -436,15 +456,20 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
     @Override
 	public void stateChanged(ChangeEvent e) {
 		JSlider source = (JSlider)e.getSource();
-		if (!source.getValueIsAdjusting()) {
-			Speed = (int)source.getValue();
-			if (cp.isRunning()) {
-				cp.pause();
-				cp.play(Speed);
+		if(e.getSource() == movingAverageSldr){
+			if (!source.getValueIsAdjusting()) {
+				movingAverageSelected = (int)source.getValue();
 			}
-			
 		}
-		
+		else if (e.getSource() == speedSldr){
+			if(!source.getValueIsAdjusting()) {
+				Speed = (int)source.getValue();
+				if (cp.isRunning()) {
+					cp.pause();
+					cp.play(Speed);
+				}
+			}
+		}
 	}
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException, ParseException {
