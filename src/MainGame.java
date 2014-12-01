@@ -22,7 +22,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
     //Define our global scale variables
 	static ArrayList<JLabel> stockAL = new ArrayList<JLabel>();
 	static ArrayList<String> AmountList = new ArrayList<String>();
-	JButton playButton,
+	static JButton playButton,
 			BuyButton,
 			SellButton;
 	public JLabel stockPriceLabel;
