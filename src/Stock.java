@@ -5,12 +5,16 @@ import java.util.List;
 public class Stock {
     public List<Date> dates,
                       indicatorDates,
+                      indicatorCompressedDates,
                       transientNonCompressedDates,
-                      transientCompressedDates;
+                      transientCompressedDates,
+    				  buyIndicatorDates;
     public List<Double> data,
                         indicatorData,
+                        indicatorCompressedData,
                         transientNonCompressedData,
-                        transientCompressedData;
+                        transientCompressedData,
+                        buyIndicatorData;
 
     ArrayList<Double> buyData = new ArrayList<Double>();
     ArrayList<Purchase> buys = new ArrayList<Purchase>();
@@ -22,6 +26,7 @@ public class Stock {
     double buyPrice     = 0;
     double sellPrice    = 0;
     double valueChange  = 0;
+    boolean isOwned = false;
 
     public Stock(String tickerSymbol, ArrayList<Date> dates, ArrayList<Double> data){
         if(dates.size() != data.size())
@@ -36,9 +41,13 @@ public class Stock {
         transientNonCompressedDates = new ArrayList<Date>();
         transientCompressedDates    = new ArrayList<Date>();
         indicatorDates              = new ArrayList<Date>();
+        indicatorCompressedDates	= new ArrayList<Date>();
+        buyIndicatorDates			= new ArrayList<Date>();
         transientCompressedData     = new ArrayList<Double>();
         transientNonCompressedData  = new ArrayList<Double>();
         indicatorData               = new ArrayList<Double>();
+        indicatorCompressedData		= new ArrayList<Double>();
+        buyIndicatorData			= new ArrayList<Double>();
 
         // add two elements to each chart
         update();
@@ -46,6 +55,9 @@ public class Stock {
 
         updateIndicator(MainGame.movingAverageSelected);
         updateIndicator(MainGame.movingAverageSelected);
+        
+        updateBuyIndicator();
+        updateBuyIndicator();
     }
 
     public void updateIndicator(int movingAveragePeriod) {
@@ -64,9 +76,17 @@ public class Stock {
             ///
             indicatorDates.add(dates.get(i));
             indicatorData.add(average);
+            indicatorCompressedDates.add(dates.get(i));
+            indicatorCompressedData.add(average);
         } else {
             indicatorData.add(data.get(i)-.5);
             indicatorDates.add(dates.get(i));
+            indicatorCompressedData.add(data.get(i)-.5);
+            indicatorCompressedDates.add(dates.get(i));
+        }
+        while(indicatorCompressedData.size()>30){
+        	indicatorCompressedData.remove(0);
+        	indicatorCompressedDates.remove(0);
         }
     }
 
@@ -82,8 +102,18 @@ public class Stock {
             transientCompressedData.remove(0);
             transientCompressedDates.remove(0);
         }
+        
 
         i--;
+    }
+    
+    public void updateBuyIndicator() {
+    	if(isOwned){
+    		buyIndicatorData.add(buyPrice);
+    	} else {
+    		buyIndicatorData.add(data.get(i));
+    	}
+    		buyIndicatorDates.add(dates.get(i));
     }
 
     public void registerPurchase(Purchase p) {

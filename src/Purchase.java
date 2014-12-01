@@ -1,6 +1,5 @@
-import java.text.DecimalFormat;
-
 import javax.swing.*;
+import java.text.DecimalFormat;
 
 /**
  * Created by aaron on 11/30/14.
@@ -16,10 +15,13 @@ public class Purchase extends JLabel {
     public Purchase(Stock s) {
         this.s = s;
         purchasePrice = s.currentPrice;
+        s.buyPrice = purchasePrice;
+        s.isOwned = true;
     }
 
     public void sell() {
         sellPrice = s.currentPrice;
+        s.isOwned = false;
     }
 
     public String printCurrent() {
@@ -42,8 +44,4 @@ public class Purchase extends JLabel {
     	
     	MainGame.BankDisplayLabel.setText("<html>$" + myFormat.format(MainGame.BankAmount) + "<br></br>$ -" + myFormat.format(MainGame.StatusAmount) + "</html>");
     }
-    
-    
-    
-    }
-
+}

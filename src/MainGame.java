@@ -46,9 +46,11 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
     static JCheckBox FCheck = new JCheckBox("F");
     static JCheckBox MSFTCheck = new JCheckBox("MSFT");
     static JCheckBox YHOOCheck = new JCheckBox("YHOO");
+
     static JLabel BankDisplayLabel = new JLabel("$10000");
     static double StatusAmount = 0;
     static double BankAmount = 10000;
+    
     JCheckBox appl = StockCheckBox("AAPL");
     JCheckBox bac  = StockCheckBox("BAC");
     JCheckBox coke = StockCheckBox("COKE");
@@ -75,6 +77,13 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
     public MainGame() throws SQLException, ClassNotFoundException, ParseException {
         //All this is just layout stuff and declaring the event listener
         setLayout(null);
+        try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
         // set background colour
         setBackground(Color.WHITE);
@@ -215,7 +224,6 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
         add(speedSldr);
         speedSldr.addChangeListener(this);
         
-        
         BankDisplayLabel.setVerticalAlignment(SwingConstants.TOP);
         BankDisplayLabel.setBounds(170, 451, 74, 149);
         add(BankDisplayLabel);
@@ -271,14 +279,11 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
                 if (s.isSelected()) {
                     Stock s1 = cp.db.readFromDb(s.getText().toLowerCase());
                     Purchase p = new Purchase(s1);
-                    
                     p.setText();
                     //purchases.add(p);
                     model.addElement(p);
                     p.UpdateBankBuy();
                 }
-                
-                
             }
             MainGame.StatusAmount = 0;
         }
