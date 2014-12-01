@@ -8,6 +8,7 @@ public class Purchase extends JLabel {
     Stock s;
     double purchasePrice;
     double sellPrice;
+    int shares = 1;
     
     double StatusPrice = 0;
     DecimalFormat myFormat = new DecimalFormat("#.00");
@@ -24,19 +25,30 @@ public class Purchase extends JLabel {
         s.isOwned = false;
     }
 
-    public String printCurrent() {
-        return "" + s.currentPrice;
-    }
-
     public void setText() {
         super.setText("current price = " + s.currentPrice);
     }
 
-    public String toString() {
-
-        return s.tickerSymbol + " $" + s.currentPrice + " :";
+    public double profit() {
+        if (s.isOwned) {
+            return shares * (s.currentPrice - purchasePrice);
+        } else {
+            return shares * (sellPrice - purchasePrice);
+        }
     }
-    
+
+    public String toString() {
+        Double p = profit();
+        String profit;
+        if (p > 0) {
+            profit = "<font color=\"green\">" + myFormat.format(p) + "</font>";
+        } else {
+            profit = "<font color=\"red\">" + myFormat.format(p) + "</font>";
+        }
+        return "<html>" + s.tickerSymbol + " :$" + profit + "</html>";
+    }
+
+
     public void UpdateBankBuy(){
     	
     	MainGame.BankAmount -= purchasePrice;

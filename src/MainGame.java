@@ -3,6 +3,8 @@
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,14 +12,10 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Hashtable;
+import java.util.*;
 
 
-public class MainGame extends JPanel implements ActionListener, ItemListener, ChangeListener {
+public class MainGame extends JPanel implements ActionListener, ItemListener, ChangeListener, ListSelectionListener {
 
     //Define our global scale variables
 	static ArrayList<JLabel> stockAL = new ArrayList<JLabel>();
@@ -36,6 +34,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
     //Purchase stuff
     JList<Purchase> purchasesJList;
     DefaultListModel model;
+    Purchase currentPurchase;
 
     
     static JCheckBox AAPLCheck = new JCheckBox("AAPL");
@@ -160,9 +159,9 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
         movingAverageSldr.setPaintLabels(true);
         add(movingAverageSldr);
         movingAverageSldr.addChangeListener(this);
-        
 
-        stockPriceLabel = new JLabel("Name, Purchase price");
+
+        stockPriceLabel = new JLabel("Name, profit");
         
         add(stockPriceLabel);
 
@@ -171,6 +170,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
         purchasesJList = new JList<Purchase>();
         model = new DefaultListModel();
         purchasesJList.setModel(model);
+        purchasesJList.addListSelectionListener(this);
         JScrollPane scrollPane = new JScrollPane(purchasesJList);
         
         purchasesJList.setVisibleRowCount(10);
@@ -189,52 +189,6 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
         cp = new ChartPanel(this);
         
         add(cp);
-        
-        /*
-        AAPLCheck.setEnabled(false);
-        AAPLCheck.setBounds(136, 88, 61, 23);
-        add(AAPLCheck);
-     
-        COKECheck.setEnabled(false);
-        COKECheck.setBounds(136, 114, 61, 23);
-        add(COKECheck);
-
-        NKECheck.setEnabled(false);
-        NKECheck.setBounds(136, 140, 61, 23);
-        add(NKECheck);
-      
-        BACCheck.setEnabled(false);
-        BACCheck.setBounds(136, 166, 61, 23);
-        add(BACCheck);
-     
-        COPCheck.setEnabled(false);
-        COPCheck.setBounds(136, 192, 61, 23);
-        add(COPCheck);
-     
-        COSTCheck.setEnabled(false);
-        COSTCheck.setBounds(200, 88, 74, 23);
-        add(COSTCheck);
-
-        DISCheck.setEnabled(false);
-        DISCheck.setBounds(200, 114, 89, 23);
-        add(DISCheck);
-
-        FCheck.setEnabled(false);
-        FCheck.setBounds(200, 140, 74, 23);
-        add(FCheck);
-  
-        MSFTCheck.setEnabled(false);
-        MSFTCheck.setBounds(200, 166, 89, 23);
-        add(MSFTCheck);
-
-        YHOOCheck.setEnabled(false);
-        YHOOCheck.setBounds(200, 192, 74, 23);
-        add(YHOOCheck);
-        
-        JLabel lblNewLabel = new JLabel("Select to Buy/Sell");
-        lblNewLabel.setBounds(136, 70, 97, 14);
-        add(lblNewLabel);
-        */
         
         speedLbl = new JLabel("Play speed:", SwingConstants.CENTER);
         add(speedLbl);
@@ -366,7 +320,6 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
                 if (s.isSelected()) {
                     Stock s1 = cp.db.readFromDb(s.getText().toLowerCase());
                     Purchase p = new Purchase(s1);
-                    p.setText();
                     //purchases.add(p);
                     model.addElement(p);
                     p.UpdateBankBuy();
@@ -378,7 +331,8 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
     		cp.sellStock();
     		SellButton.setEnabled(false);
     		BuyButton.setEnabled(true);
-    	}
+            currentPurchase.sell();
+        }
 
     }
 
@@ -471,6 +425,12 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
 			}
 		}
 	}
+
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        currentPurchase = purchasesJList.getSelectedValue();
+        SellButton.setEnabled(true);
+    }
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException, ParseException {
 
