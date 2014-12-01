@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Hashtable;
 
 
@@ -73,6 +75,17 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
     int Speed = speedStart;
     
     JCheckBoxList cbList = new JCheckBoxList();
+    
+	//////////////////////NEW//////////////////////////////
+	static ArrayList<Date> FakeDates= new ArrayList<Date>();
+	static ArrayList<Double> FakeDouble= new ArrayList<Double>();
+	static final int SlideMIN = 0;
+	static final int SlideMAX = 50;
+	static final int SlideINIT = 30; 
+	JSlider MovingWindowsSlider = new JSlider(JSlider.HORIZONTAL,
+            SlideMIN, SlideMAX, SlideINIT);
+	Stock stockV1;
+	///////////////////////END////////////////////////////
 
     public MainGame() throws SQLException, ClassNotFoundException, ParseException {
         //All this is just layout stuff and declaring the event listener
@@ -90,9 +103,11 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
 
         setPreferredSize(new Dimension(1100, 630));
 
+        /*
         JLabel lblChartTypes = new JLabel("Chart Types:");
         lblChartTypes.setBounds(15, 10, 100, 14);
         add(lblChartTypes);
+		*/
 
         JLabel lblStockInformation = new JLabel("Stock Information:");
         lblStockInformation.setBounds(15, 70, 120, 14);
@@ -167,6 +182,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
         cp.setBounds(262,11, 800, 600);
         add(cp);
         
+        /*
         AAPLCheck.setEnabled(false);
         AAPLCheck.setBounds(136, 88, 61, 23);
         add(AAPLCheck);
@@ -210,6 +226,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
         JLabel lblNewLabel = new JLabel("Select to Buy/Sell");
         lblNewLabel.setBounds(136, 70, 97, 14);
         add(lblNewLabel);
+        */
         
         Hashtable speedTable = new Hashtable();
         speedTable.put(new Integer(speedMin), new JLabel("Fast"));
@@ -231,6 +248,42 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
         JLabel lblBank = new JLabel("Bank");
         lblBank.setBounds(170, 428, 46, 14);
         add(lblBank);
+        
+    	/////////////NEW///////////////////////////
+    	//Add fake data to get out of errors
+    	for(int i=0;i<=15;i++){
+    		Calendar cal = Calendar.getInstance();
+    		cal.set(2011, 5+i, 10);
+    		FakeDates.add(cal.getTime());
+    		FakeDouble.add(i*2.3);
+    	}
+    	//new instance of stock class to access its methods
+    	stockV1 = new Stock("BLAH",FakeDates,FakeDouble);
+    	stockV1.UserChooseMovingDate(30);
+    	//Setup slider
+    	MovingWindowsSlider.setMinorTickSpacing(5);
+    	MovingWindowsSlider.setMajorTickSpacing(10);
+    	MovingWindowsSlider.setPaintTicks(true);
+    	MovingWindowsSlider.setPaintLabels(true);
+    	MovingWindowsSlider.setLabelTable(MovingWindowsSlider.createStandardLabels(10));
+    	MovingWindowsSlider.setBounds(15, 30, 150, 40);
+    	MovingWindowsSlider.addChangeListener(new ChangeListener(){
+    		@Override
+    		public void stateChanged( ChangeEvent event )
+    	{
+    		
+    		if( event.getSource() == MovingWindowsSlider);
+    		{
+    			stockV1.UserChooseMovingDate(MovingWindowsSlider.getValue());
+    			
+    		}
+    	}
+    	});;
+    	add(MovingWindowsSlider);
+    	JLabel MovingWindowlbl = new JLabel("Moving Window:");
+        MovingWindowlbl.setBounds(15, 10, 150, 20);
+        add(MovingWindowlbl);
+    	/////////////////////////////END/////////////////////////////
     }
 
     private JCheckBox StockCheckBox(String s){

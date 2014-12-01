@@ -22,6 +22,8 @@ public class Stock {
 
     private int i;
     
+    static int UserChoose=5;
+    
     double currentPrice = 0;
     double buyPrice     = 0;
     double sellPrice    = 0;
@@ -84,12 +86,36 @@ public class Stock {
             indicatorCompressedData.add(data.get(i)-.5);
             indicatorCompressedDates.add(dates.get(i));
         }
-        while(indicatorCompressedData.size()>30){
+        while(indicatorCompressedData.size()>UserChoose){
         	indicatorCompressedData.remove(0);
         	indicatorCompressedDates.remove(0);
         }
     }
+    
+    ////////////////////////NEW//////////////////////////////
+   public int UserChooseMovingDate(int nwChoice){
+   	UserChoose=nwChoice;
+   	return UserChoose;
+   }
+   
+   public void update() {
+   	currentPrice = data.get(i);
+       transientNonCompressedDates.add(dates.get(i));
+       transientNonCompressedData.add(data.get(i));
 
+       transientCompressedDates.add(dates.get(i));
+       transientCompressedData.add(data.get(i));
+       
+       /////////Place UserChoose in while loop//////////////////////
+       while(transientCompressedData.size()>UserChoose){
+           transientCompressedData.remove(0);
+           transientCompressedDates.remove(0);
+       }
+
+       i--;
+   }
+   ////////////////////////////END/////////////////////////////////// 
+/*
     public void update() {
     	currentPrice = data.get(i);
         transientNonCompressedDates.add(dates.get(i));
@@ -106,7 +132,7 @@ public class Stock {
 
         i--;
     }
-    
+    */
     public void updateBuyIndicator() {
     	if(isOwned){
     		buyIndicatorData.add(buyPrice);
