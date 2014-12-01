@@ -8,36 +8,51 @@ public class Purchase extends JLabel {
     Stock s;
     double purchasePrice;
     double sellPrice;
-    DecimalFormat df = new DecimalFormat("#.##");
-    int shares;
-    boolean sold = false;
+    
+    double StatusPrice = 0;
+    DecimalFormat myFormat = new DecimalFormat("#.00");
 
-    public Purchase(Stock s, int shares) {
+    public Purchase(Stock s) {
         this.s = s;
-        this.shares = shares;
         purchasePrice = s.currentPrice;
+        s.buyPrice = purchasePrice;
+        s.isOwned = true;
     }
 
     public void sell() {
         sellPrice = s.currentPrice;
+        s.isOwned = false;
     }
 
-    public double profit() {
-        if (sold) {
-            return shares * (s.sellPrice - purchasePrice);
-        } else {
-            return shares * (s.currentPrice - purchasePrice);
-        }
+    public String printCurrent() {
+        return "" + s.currentPrice;
+    }
+
+    public void setText() {
+        super.setText("current price = " + s.currentPrice);
     }
 
     public String toString() {
-        Double p = profit();
-        String profit;
-        if (p > 0) {
-            profit = "<font color=\"green\">" + df.format(p) + "</font>";
-        } else {
-            profit = "<font color=\"red\">" + df.format(p) + "</font>";
-        }
-        return "<html>" + s.tickerSymbol + " " + shares + " $" + purchasePrice + " :$" + profit + "</html>";
+
+        return s.tickerSymbol + " $" + s.currentPrice + " :";
+    }
+    
+    public void UpdateBankBuy(){
+    	
+    	MainGame.BankAmount -= purchasePrice;
+    	
+    	if(MainGame.BankAmount <= 0)
+    	{
+    		MainGame.BankDisplayLabel.setText("<html>GAME OVER!<br></br><br></br>You are out of money!</html>");
+    		MainGame.BuyButton.setEnabled(false);
+    		MainGame.SellButton.setEnabled(false);
+    		MainGame.playButton.doClick();
+    	}
+    	else
+    	{
+    	MainGame.StatusAmount += purchasePrice;
+    	
+    	MainGame.BankDisplayLabel.setText("<html>$" + myFormat.format(MainGame.BankAmount) + "<br></br>$ -" + myFormat.format(MainGame.StatusAmount) + "</html>");
+    	}
     }
 }
