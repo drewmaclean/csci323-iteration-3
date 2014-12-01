@@ -46,7 +46,9 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
     static JCheckBox FCheck = new JCheckBox("F");
     static JCheckBox MSFTCheck = new JCheckBox("MSFT");
     static JCheckBox YHOOCheck = new JCheckBox("YHOO");
-
+    static JLabel BankDisplayLabel = new JLabel("$10000");
+    static double StatusAmount = 0;
+    static double BankAmount = 10000;
     JCheckBox appl = StockCheckBox("AAPL");
     JCheckBox bac  = StockCheckBox("BAC");
     JCheckBox coke = StockCheckBox("COKE");
@@ -128,8 +130,8 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
         movingAverageCB.setSelectedIndex(0);
 
 
-        stockPriceLabel = new JLabel("Name, Purchase price, Current Profit");
-        stockPriceLabel.setBounds(10, 420, 200, 30);
+        stockPriceLabel = new JLabel("Name, Purchase price");
+        stockPriceLabel.setBounds(10, 420, 150, 30);
         add(stockPriceLabel);
 
 
@@ -212,6 +214,15 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
         speedSldr.setBounds(10, 240, 150, 50);
         add(speedSldr);
         speedSldr.addChangeListener(this);
+        
+        
+        BankDisplayLabel.setVerticalAlignment(SwingConstants.TOP);
+        BankDisplayLabel.setBounds(170, 451, 74, 149);
+        add(BankDisplayLabel);
+        
+        JLabel lblBank = new JLabel("Bank");
+        lblBank.setBounds(170, 428, 46, 14);
+        add(lblBank);
     }
 
     private JCheckBox StockCheckBox(String s){
@@ -260,11 +271,16 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
                 if (s.isSelected()) {
                     Stock s1 = cp.db.readFromDb(s.getText().toLowerCase());
                     Purchase p = new Purchase(s1);
+                    
                     p.setText();
                     //purchases.add(p);
                     model.addElement(p);
+                    p.UpdateBankBuy();
                 }
+                
+                
             }
+            MainGame.StatusAmount = 0;
         }
     	else if(e.getSource() == SellButton) {
     		cp.sellStock();
