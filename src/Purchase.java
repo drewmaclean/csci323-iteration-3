@@ -40,8 +40,19 @@ public class Purchase extends JLabel {
     public void UpdateBankBuy(){
     	
     	MainGame.BankAmount -= purchasePrice;
+    	
+    	if(MainGame.BankAmount <= 0)
+    	{
+    		MainGame.BankDisplayLabel.setText("<html>GAME OVER!<br></br><br></br>You are out of money!</html>");
+    		MainGame.BuyButton.setEnabled(false);
+    		MainGame.SellButton.setEnabled(false);
+    		MainGame.playButton.doClick();
+    	}
+    	else
+    	{
     	MainGame.StatusAmount += purchasePrice;
     	
     	MainGame.BankDisplayLabel.setText("<html>$" + myFormat.format(MainGame.BankAmount) + "<br></br>$ -" + myFormat.format(MainGame.StatusAmount) + "</html>");
+    	}
     }
 }
