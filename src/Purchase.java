@@ -67,4 +67,16 @@ public class Purchase extends JLabel {
     	MainGame.BankDisplayLabel.setText("<html>$" + myFormat.format(MainGame.BankAmount) + "<br></br>$ -" + myFormat.format(MainGame.StatusAmount) + "</html>");
     	}
     }
+    
+    public void UpdateBankSell(){
+    
+    MainGame.BankAmount += purchasePrice;
+    MainGame.StatusAmount += purchasePrice;
+    
+    MainGame.BankDisplayLabel.setText("<html>$" + myFormat.format(MainGame.BankAmount) + "<br></br>$ -" + myFormat.format(MainGame.StatusAmount) + "</html>");
+    
+        
+    }
+    
+    }
 }
