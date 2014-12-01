@@ -1,3 +1,5 @@
+import java.text.DecimalFormat;
+
 import javax.swing.*;
 
 /**
@@ -7,6 +9,9 @@ public class Purchase extends JLabel {
     Stock s;
     double purchasePrice;
     double sellPrice;
+    
+    double StatusPrice = 0;
+    DecimalFormat myFormat = new DecimalFormat("#.00");
 
     public Purchase(Stock s) {
         this.s = s;
@@ -29,4 +34,16 @@ public class Purchase extends JLabel {
 
         return s.tickerSymbol + " $" + s.currentPrice + " :";
     }
-}
+    
+    public void UpdateBankBuy(){
+    	
+    	MainGame.BankAmount -= purchasePrice;
+    	MainGame.StatusAmount += purchasePrice;
+    	
+    	MainGame.BankDisplayLabel.setText("<html>$" + myFormat.format(MainGame.BankAmount) + "<br></br>$ -" + myFormat.format(MainGame.StatusAmount) + "</html>");
+    }
+    
+    
+    
+    }
+
