@@ -30,6 +30,11 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
     JLabel movingAverageLbl;
     JComboBox<Integer> movingAverageCB;
     ChartPanel cp;
+
+    //Purchase stuff
+    JList<Purchase> purchasesJList;
+    DefaultListModel model;
+
     
     static JCheckBox AAPLCheck = new JCheckBox("AAPL");
     static JCheckBox COKECheck = new JCheckBox("COKE");
@@ -58,8 +63,8 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
     private int speedMax = 300;
     private int speedStart = 150;
     private int speedIncrement = 50;
-    
-    ArrayList<JCheckBox> stocks;
+
+    ArrayList<JCheckBox> MainGamestocks;
 
     int Speed = speedStart;
     
@@ -82,11 +87,11 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
         lblStockInformation.setBounds(15, 70, 120, 14);
         add(lblStockInformation);
 
-        stocks = new ArrayList<JCheckBox>();
+        MainGamestocks = new ArrayList<JCheckBox>();
 
-        stocks.addAll(Arrays.asList(new JCheckBox[]{appl, bac, coke, cop, cost, dis, f, msft, nke, yhoo}));
+        MainGamestocks.addAll(Arrays.asList(new JCheckBox[]{appl, bac, coke, cop, cost, dis, f, msft, nke, yhoo}));
 
-        cbList.setListData(stocks.toArray(new JCheckBox[stocks.size()]));
+        cbList.setListData(MainGamestocks.toArray(new JCheckBox[MainGamestocks.size()]));
 
         JScrollPane jsp = new JScrollPane(cbList);
         jsp.setBounds(10, 90, 120, 150);
@@ -121,18 +126,33 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
         add(movingAverageCB);
         movingAverageCB.addActionListener(this);
         movingAverageCB.setSelectedIndex(0);
-        
-        stockPriceLabel = new JLabel("Name - Buy - Sell - Profit");
+
+
+        stockPriceLabel = new JLabel("Name, Purchase price, Current Profit");
         stockPriceLabel.setBounds(10, 420, 200, 30);
         add(stockPriceLabel);
-        
+
+
+        // purchase stuff
+        purchasesJList = new JList<Purchase>();
+        model = new DefaultListModel();
+        purchasesJList.setModel(model);
+        JScrollPane scrollPane = new JScrollPane(purchasesJList);
+        scrollPane.setBounds(10, 450, 150, 150);
+        purchasesJList.setVisibleRowCount(10);
+        purchasesJList.setFixedCellHeight(15);
+        purchasesJList.setFixedCellWidth(100);
+        add(scrollPane);
+
+        /*
         for (int i = 0; i < 10; i++) {
         	stockAL.add(stockPriceLabel = new JLabel());
         	stockAL.get(i).setBounds(10, (440 + (i * 20)), 200, 30);
         	add(stockAL.get(i));
         }
+        */
 
-        cp = new ChartPanel();
+        cp = new ChartPanel(this);
         cp.setBounds(262,11, 800, 600);
         add(cp);
         
@@ -207,7 +227,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
     	if(e.getSource() == playButton) {
     		if(e.getActionCommand().equals("Play")) {
                 ArrayList<JCheckBox> toRemove = new ArrayList<JCheckBox>();
-                for (JCheckBox s : stocks) {
+                for (JCheckBox s : MainGamestocks) {
                     if (s.isSelected()) {
                         cp.addStock(s.getText().toLowerCase());
                         s.setSelected(false);
@@ -217,10 +237,10 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
                 }
 
                 for (JCheckBox r : toRemove) {
-                    stocks.remove(r);
+                    MainGamestocks.remove(r);
                 }
 
-                cbList.setListData(stocks.toArray(new JCheckBox[stocks.size()]));
+                cbList.setListData(MainGamestocks.toArray(new JCheckBox[MainGamestocks.size()]));
                 cbList.updateUI();
 
                 playButton.setText("Pause");
@@ -235,10 +255,17 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
     		}
     	}
     	else if(e.getSource() == BuyButton) {
-    		cp.buyStock();
-    		SellButton.setEnabled(true);
-    		BuyButton.setEnabled(false);
-    	}
+
+            for (JCheckBox s : MainGamestocks) {
+                if (s.isSelected()) {
+                    Stock s1 = cp.db.readFromDb(s.getText().toLowerCase());
+                    Purchase p = new Purchase(s1);
+                    p.setText();
+                    //purchases.add(p);
+                    model.addElement(p);
+                }
+            }
+        }
     	else if(e.getSource() == SellButton) {
     		cp.sellStock();
     		SellButton.setEnabled(false);
@@ -260,6 +287,10 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
     		}
     	}
     }
+
+    public void update() {
+        purchasesJList.updateUI();
+    }
     
     @Override
     public void itemStateChanged(ItemEvent e) {
@@ -268,7 +299,7 @@ public class MainGame extends JPanel implements ActionListener, ItemListener, Ch
         if (!cp.running) {
             int num_selected = 0;
 
-            for (JCheckBox s : stocks) {
+            for (JCheckBox s : MainGamestocks) {
                 if (s.isSelected()) num_selected++;
             }
             if (num_selected >= 5) {

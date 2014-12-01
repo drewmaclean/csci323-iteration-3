@@ -13,6 +13,7 @@ public class Stock {
                         transientCompressedData;
 
     ArrayList<Double> buyData = new ArrayList<Double>();
+    ArrayList<Purchase> buys = new ArrayList<Purchase>();
     public String tickerSymbol;
 
     private int i;
@@ -83,6 +84,10 @@ public class Stock {
         }
 
         i--;
+    }
+
+    public void registerPurchase(Purchase p) {
+
     }
 
     public void buy() {

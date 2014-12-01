@@ -25,10 +25,13 @@ public class ChartPanel extends JPanel{
     double currentPrice = 0;
     JLabel stockPrice;
     boolean running = false;
+    MainGame mg;
 
-    public ChartPanel() throws SQLException, ClassNotFoundException, ParseException {
-    	
-    	seriesColorAL.add(SeriesColor.BLUE);
+    public ChartPanel(MainGame mg) throws SQLException, ClassNotFoundException, ParseException {
+
+        this.mg = mg;
+
+        seriesColorAL.add(SeriesColor.BLUE);
     	seriesColorAL.add(SeriesColor.GREEN);
     	seriesColorAL.add(SeriesColor.PURPLE);
     	seriesColorAL.add(SeriesColor.ORANGE);
@@ -70,7 +73,7 @@ public class ChartPanel extends JPanel{
                                         stock.transientNonCompressedDates,
                                         stock.transientNonCompressedData);
         series.setMarker(SeriesMarker.NONE);
-        series.setLineColor(seriesColorAL.get(stocks.size())); // Check how many stocks have been added and get a color
+        series.setLineColor(seriesColorAL.get(stocks.size())); // Check how many MainGamestocks have been added and get a color
 
 
         // add indicator
@@ -84,7 +87,7 @@ public class ChartPanel extends JPanel{
                 stock.transientCompressedDates,
                 stock.transientCompressedData);
         series1.setMarker(SeriesMarker.NONE);
-        series1.setLineColor(seriesColorAL.get(stocks.size())); // Check how many stocks have been added and get a color
+        series1.setLineColor(seriesColorAL.get(stocks.size())); // Check how many MainGamestocks have been added and get a color
 
 
         stocks.add(stock);
@@ -350,26 +353,12 @@ public class ChartPanel extends JPanel{
 
                 stockPanel.updateSeries(s.tickerSymbol, s.transientNonCompressedDates, s.transientNonCompressedData);
                 stockPanel.updateSeries(s.tickerSymbol+" ind", s.indicatorDates, s.indicatorData);
-
                 stockPanel1.updateSeries(s.tickerSymbol, s.transientCompressedDates, s.transientCompressedData);
+
+                //update stock
+                mg.update();
 
             }
         }
-    }
-
-    public static void main(String[] args) throws SQLException, ClassNotFoundException, ParseException {
-
-        // Create and set up the window.
-        JFrame frame = new JFrame("Stock Market Game");
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        ChartPanel p1 = new ChartPanel();
-        frame.add(p1);
-        p1.addStock("aapl");
-        //p1.play();
-
-
-        // Display the window.
-        frame.pack();
-        frame.setVisible(true);
     }
 }

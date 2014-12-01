@@ -1,8 +1,4 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,7 +32,7 @@ public class DatabaseAccess {
 
         openConnection();
 
-        // read all stocks into a hashMap for quick access
+        // read all MainGamestocks into a hashMap for quick access
 
         String[] tickerSymbols = new String[] {"AAPL","COKE","NKE", "BAC","COP","COST","DIS","F","MSFT","YHOO"};
         DateFormat sdf = new SimpleDateFormat("dd-MMM-yy");
